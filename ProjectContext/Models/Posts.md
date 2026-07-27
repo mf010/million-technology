@@ -1,0 +1,106 @@
+- Model Name: Post
+    - Props:
+        - Id
+        - AuthorUserId
+        - Title
+        - Slug
+        - Excerpt
+        - Content
+        - CoverImage
+        - Status (draft, published, archived)
+        - PublishedAt
+        - SeoTitle
+        - SeoDescription
+        - CreatedAt
+
+    - Functionalities
+        - Create Post
+            - Functionality Root: POST /api/posts
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - Title
+              - Slug
+              - Excerpt
+              - Content
+              - CoverImage
+              - Status
+              - PublishedAt
+              - SeoTitle
+              - SeoDescription
+            - Functionality Output:
+              - Created post.
+            - Functionality Workflow:
+              - Validate the title and content.
+              - Generate the slug from the title when it is not provided.
+              - Ensure the slug is unique.
+              - Validate the uploaded cover image.
+              - Set the authenticated user as AuthorUserId .
+              - Set PublishedAt when the post is published and no publishing date was provided.
+              - Create the post.
+
+        - List Posts
+            - Functionality Root: GET /api/posts
+            - Functionality Security: Public
+            - Functionality Input:
+              - Search
+              - Page
+              - PageSize
+              - SortBy
+              - SortDirection
+            - Functionality Output:
+              - Paginated list of published posts.
+            - Functionality Workflow:
+              - Return only non-deleted posts with Published status.
+              - Exclude posts with a future PublishedAt .
+              - Search against title, excerpt, and content.
+              - Apply pagination and sorting.
+              - Return summary information rather than the complete content where possible.
+
+        -  Get Post
+            - Functionality Root: GET /api/posts/{identifier}
+            - Functionality Security: Public
+            - Functionality Input:
+              - PostId or Slug
+            - Functionality Output:
+              - Complete published post details.
+            - Functionality Workflow:
+              - Find the post by ID or slug.
+              - Ensure the post is published and not deleted.
+              - Ensure PublishedAt is not in the future.
+              - Return not found when the post is unavailable publicly.
+
+        - Update Post
+            - Functionality Root: PUT /api/posts/{id}
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - PostId
+              - Title
+              - Slug
+              - Excerpt
+              - Content
+              - CoverImage
+              - Status
+              - PublishedAt
+              - SeoTitle
+              - SeoDescription
+            - Functionality Output:
+              - Updated post.
+            - Functionality Workflow:
+              - Find the post.
+              - Validate the updated values.
+              - Ensure the slug remains unique.
+              - Validate and replace the cover image when provided.
+              - Set PublishedAt when changing the status to Published.
+              - Update the post. 
+        
+        - Remove Post
+            - Functionality Root: DELETE /api/posts/{id}
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - PostId
+            - Functionality Output:
+              - Success confirmation.
+            - Functionality Workflow:
+              - Find the post.
+              - Soft-delete it.
+              - The post must no longer appear in public requests.

@@ -1,0 +1,100 @@
+- Model Name: Client Reach
+    - Props
+      - Id
+      - Name
+      - Email
+      - PhoneNumber
+      - CompanyName
+      - Subject
+      - MessageType (Request, Question, Partnership, Complaint, Other)
+      - Message
+      - Status (New, InProgress, Resolved, Archived)
+      - InternalNotes
+      - HandledAt
+      - CreatedAt
+
+    - Functionalities 
+      
+        -  Submit Client Message
+            - Functionality Root: POST /api/client-reach
+            - Functionality Security: Public
+            - Functionality Input:
+              - Name
+              - Email
+              - PhoneNumber
+              - CompanyName
+              - Subject
+              - MessageType
+              - Message
+            - Functionality Output:
+              - Submission confirmation.
+              - ClientReachId may be returned as a reference number.
+            - Functionality Workflow:
+              - Validate all required fields.
+              - Validate the email format.
+              - Validate the phone-number format when provided.
+              - Validate the message length.
+              - Apply rate limiting to prevent spam.
+              - Apply CAPTCHA or another bot-prevention mechanism.
+              - Remove unsafe HTML or script content.
+              - Create the message with New status.
+              - Do not return internal fields.
+        
+        - List Client Messages
+            - Functionality Root: GET /api/client-reach
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - Search
+              - MessageType
+              - Status
+              - DateFrom
+              - DateTo
+              - Page
+              - PageSize
+              - SortDirection
+            - Functionality Output:
+              - Paginated list of client messages.
+            - Functionality Workflow:
+              - Return non-deleted submissions.
+              - Search against name, email, company, subject, and message.
+              - Apply type, status, and date filtering.
+              - Sort newest submissions first by default.
+        
+        - Get Client Message
+            - Functionality Root: GET /api/client-reach/{id}
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - ClientReachId
+            - Functionality Output:
+              - Complete message details, including internal notes.
+            - Functionality Workflow:
+              - Find the submission by ID.
+              - Return not found when it does not exist.
+        
+        - Update Client Message
+            - Functionality Root: PUT /api/client-reach/{id}
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - ClientReachId
+              - Status
+              - InternalNotes 
+            - Functionality Output:
+              - Updated client message.
+            - Functionality Workflow:
+              - Find the message.
+              - Validate the new status.
+              - Update internal notes.
+              - Set HandledAt when the status changes to Resolved.
+              - Clear or retain HandledAt according to the selected status.
+        
+        - Remove Client Message
+            - Functionality Root: DELETE /api/client-reach/{id}
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - ClientReachId
+            - Functionality Output:
+              - Success confirmation.
+            - Functionality Workflow:
+              - Find the message.
+              - Soft-delete it.
+              - Keep the record available for restoration or auditing when required.

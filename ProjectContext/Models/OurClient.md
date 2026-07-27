@@ -1,0 +1,90 @@
+- Model Name: OurClient
+    - Properties
+        - Id
+        - Name
+        - Logo
+        - WebsiteUrl
+        - Description
+        - IsFeatured
+        - IsActive
+        - DisplayOrder
+        - CreatedAt
+    
+    - Functionalities
+      
+        - Create Client
+            - Functionality Root: POST /api/our-clients
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - Name
+              - Logo
+              - WebsiteUrl
+              - Description
+              - IsFeatured
+              - IsActive
+              - DisplayOrder
+            - Functionality Output:
+              - Created client.
+            - Functionality Workflow:
+              - Validate the client name.
+              - Validate and upload the logo.
+              - Validate the website URL when provided.
+              - Create the client.
+        
+        - List Clients
+            - Functionality Root: GET /api/our-clients
+            - Functionality Security: Public
+            - Functionality Input:
+              - IsFeatured
+            - Functionality Output:
+              - List of active clients.
+            - Functionality Workflow:
+              - Return only active, non-deleted clients.
+              - Apply featured filtering when provided.
+              - Order by DisplayOrder , then name.
+
+        - Get Client
+            - Functionality Root: GET /api/our-clients/{id}
+            - Functionality Security: Public
+            - Functionality Input:
+              - OurClientId
+            - Functionality Output:
+              - Client details.
+              - Published projects and statements related to the client when required.
+            - Functionality Workflow:
+              - Find the client.
+              - Ensure the client is active and not deleted.
+        
+        - Update Client
+            - Functionality Root: PUT /api/our-clients/{id}
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - OurClientId
+              - Name
+              - Logo
+              - WebsiteUrl
+              - Description
+              - IsFeatured
+              - IsActive
+              - DisplayOrder
+            - Functionality Output:
+              - Updated client.
+            - Functionality Workflow:
+              - Find the client.
+              - Validate the updated values.
+              - Validate and replace the logo when a new logo is provided.
+              - Update the client.
+
+        - Remove Client
+            - Functionality Root: DELETE /api/our-clients/{id}
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - OurClientId
+            - Functionality Output:
+              - Success confirmation.
+            - Functionality Workflow:
+              - Find the client.
+              - Check whether projects or client statements reference it.
+              - Keep related historical records and set their client reference to null, or reject removal until
+              - references are handled.
+              - Soft-delete the client. 

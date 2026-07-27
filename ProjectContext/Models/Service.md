@@ -1,0 +1,101 @@
+- Model Name: Service
+    - Props
+        - Id
+        - ParentId
+        - Title
+        - Slug
+        - Short Description
+        - Description
+        - Icon
+        - Image
+        - DesplayOrder
+        - IsActive
+        - SeoTitel
+        - SeoDescription
+        - CreatedAt
+
+    - Functionality
+
+        - Create Service
+            - Functionality Root: POST /api/services
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - ParentServiceId
+              - Title
+              - Slug
+              - ShortDescription
+              - Description
+              - Icon
+              - Image
+              - DisplayOrder
+              - IsActive
+              - SeoTitle
+              - SeoDescription
+            - Functionality Output:
+              - Created service.
+            - Functionality Workflow:
+              - Validate the title and description.
+              - Generate the slug when it is not provided.
+              - Ensure the slug is unique.
+              - Validate the parent service when ParentServiceId is provided.
+              - Prevent a subservice from referencing itself.
+              - Limit the hierarchy to one parent level unless deeper nesting is intentionally supported.
+              - Validate the image and icon.
+              - Create the service.
+        
+        - List Services
+            - Functionality Root: GET /api/services
+            - Functionality Security: Public
+            - Functionality Input:
+              - ParentServiceId
+              - Search
+            - Functionality Output:
+              - Active services with their active subservices.
+            - Functionality Workflow:
+              - Return only active, non-deleted services.
+              - Order records by DisplayOrder , then title.
+              - Return parent services and nested subservices.
+              - Exclude a subservice when its parent is inactive or deleted.
+        
+        - Get Service
+            - Functionality Root: GET /api/services/{identifier}
+            - Functionality Security: Public
+            - Functionality Input:
+              - ServiceId or Slug
+            - Functionality Output:
+              - Complete service details.
+              - Active subservices when the service is a parent.
+            - Functionality Workflow:
+              - Find the service by ID or slug.
+              - Ensure it is active and not deleted.
+              - Return active subservices ordered by DisplayOrder.
+        
+        - Update Service
+            - Functionality Root: PUT /api/services/{id}
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - ServiceId
+              - All editable service properties
+            - Functionality Output:
+              - Updated service.
+            - Functionality Workflow:
+              - Find the service.
+              - Validate the title, slug, parent relationship, image, and descriptions.
+              - Ensure the service does not become its own parent.
+              - Prevent circular parent relationships.
+              - Ensure the slug remains unique.
+              - Update the service.
+        
+        -  Remove Service
+            - Functionality Root: DELETE /api/services/{id}
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - ServiceId
+            - Functionality Output:
+              - Success confirmation.
+            - Functionality Workflow:
+              - Find the service.
+              - Check whether it has active subservices.
+              - Either reject removal until the subservices are moved or removed, or soft-delete the service and
+              - all of its subservices.
+              - The selected behavior should be consistent across the application 

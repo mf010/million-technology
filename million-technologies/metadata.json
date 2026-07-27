@@ -1,0 +1,6 @@
+{
+  "name": "Million Technologies",
+  "description": "A sleek landing page for Million Technologies featuring iOS glassmorphism and 3D scrolling animations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

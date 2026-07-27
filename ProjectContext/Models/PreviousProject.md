@@ -1,0 +1,118 @@
+- Model Name: PreviousProject
+    - Props:
+        - Id
+        - OurClientId
+        - Title
+        - Slug
+        - ClientDisplayName
+        - ShortDescription
+        - Description
+        - Challenge
+        - Solution
+        - Results
+        - Technologies
+        - CoverImage
+        - GalleryImages
+        - ProjectUrl
+        - CompletedAt
+        - IsFeatured
+        - IsPublished
+        - DisplayOrder
+        - SeoTitle
+        - SeoDescription
+        - CreatedAt
+    
+    - Functionalities
+      
+        - Create Previous Project
+            - Functionality Root: POST /api/previous-projects
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - OurClientId
+              - Title
+              - Slug
+              - ClientDisplayName
+              - ShortDescription
+              - Description
+              - Challenge
+              - Solution
+              - Results
+              - Technologies
+              - CoverImage
+              - GalleryImages
+              - ProjectUrl
+              - CompletedAt
+              - IsFeatured
+              - IsPublished
+              - DisplayOrder
+              - SeoTitle
+              - SeoDescription
+            - Functionality Output:
+              - Created project.
+            - Functionality Workflow:
+              - Validate the title and description.
+              - Generate the slug when it is not provided.
+              - Ensure the slug is unique.
+              - Validate OurClientId when provided.
+              - Require either an existing client or a client display name when client information must appear.
+              - Validate image files and the project URL.
+              - Validate technology-array values.
+              - Create the project
+        
+        -  List Previous Projects
+            - Functionality Root: GET /api/previous-projects
+            - Functionality Security: Public
+            - Functionality Input:
+              - Search
+              - IsFeatured
+              - Technology
+              - ClientId
+              - Page
+              - PageSize
+            - Functionality Output:
+              - Paginated list of published previous projects.
+            - Functionality Workflow:
+              - Return only published, non-deleted projects.
+              - Apply search against title, description, client name, and technologies.
+              - Apply featured, client, and technology filtering.
+              - Order by DisplayOrder , then completion date.
+            
+        - Get Previous Project
+            - Functionality Root: GET /api/previous-projects/{identifier}
+            - Functionality Security: Public
+            - Functionality Input:
+              - PreviousProjectId or Slug
+            - Functionality Output:
+              - Complete project case-study information.
+            - Functionality Workflow:
+              - Find the project by ID or slug.
+              - Ensure it is published and not deleted.
+              - Include related client information when available.
+        
+        - Update Previous Project
+            - Functionality Root: PUT /api/previous-projects/{id}
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - PreviousProjectId
+              - All editable project properties
+            - Functionality Output:
+              - Updated project.
+            - Functionality Workflow:
+              - Find the project.
+              - Apply the same validation rules used during creation.
+              - Ensure the slug remains unique.
+              - Validate newly uploaded images.
+              - Remove replaced image files when they are no longer used.
+              - Update the project.
+        
+        - Remove Previous Project
+            - Functionality Root: DELETE /api/previous-projects/{id}
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - PreviousProjectId
+            - Functionality Output:
+              - Success confirmation.
+            - Functionality Workflow:
+              - Find the project.
+              - Soft-delete it.
+              - Remove it from all public project lists.

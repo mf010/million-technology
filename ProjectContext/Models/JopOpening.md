@@ -1,0 +1,109 @@
+- Model Name: JopOpening
+    - Properties
+      - Id
+      - Title
+      - Slug
+      - Department
+      - Location
+      - Employment Type (Full-Time, Part-Time, Contract, Internship, Temporary)
+      - Workplace Type (On-Site, Remote, Hybird)
+      - Summary
+      - Description
+      - Responsibilities
+      - Requirements
+      - ApplicationEmail
+      - ApplicationUrl
+      - Status (Draft, Open, Close)
+      - PublishedAt
+      - ExpiresAt
+      - CreatedAt
+
+    - Functionalities
+        
+        -  Create Job Opening
+            - Functionality Root: POST /api/job-openings
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - Title
+              - Slug
+              - Department
+              - Location
+              - EmploymentType
+              - WorkplaceType
+              - Summary
+              - Description
+              - Responsibilities
+              - Requirements
+              - ApplicationEmail
+              - ApplicationUrl
+              - Status
+              - PublishedAt
+              - ExpiresAt
+            - Functionality Output:
+              - Created job opening.
+            - Functionality Workflow:
+              - Validate the title, description, employment type, and workplace type.
+              - Generate a slug when one is not provided.
+              - Ensure the slug is unique.
+              - Validate the application email and URL when provided.
+              - Require at least one application method.
+              - Ensure ExpiresAt occurs after PublishedAt .
+              - Set PublishedAt when the status is Open.
+              - Create the job opening.
+
+        - List Job Openings
+            - Functionality Root: GET /api/job-openings
+            - Functionality Security: Public
+            - Functionality Input:
+              - Search
+              - Department
+              - EmploymentType
+              - WorkplaceType
+              - Page
+              - PageSize
+            - Functionality Output:
+              - Paginated list of open job openings.
+            - Functionality Workflow:
+              - Return only non-deleted job openings with Open status.
+              - Exclude openings that have not yet been published.
+              - Exclude openings whose expiration date has passed.
+              - Apply filtering, searching, and pagination.
+        
+        - Get Job Opening
+            - Functionality Root: GET /api/job-openings/{identifier}
+            - Functionality Security: Public
+            - Functionality Input:
+              - JobOpeningId or Slug
+            - Functionality Output:
+              - Complete job-opening details.
+            - Functionality Workflow:
+              - Find the opening by ID or slug.
+              - Ensure it is Open, published, not expired, and not deleted.
+              - Return not found when it is unavailable publicly.
+        
+        - Update Job Opening
+            - Functionality Root: PUT /api/job-openings/{id}
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - JobOpeningId
+              - All editable job-opening properties
+            - Functionality Output:
+              - Updated job opening.
+            - Functionality Workflow:
+              - Find the job opening.
+              - Apply the same validation rules used during creation.
+              - Ensure the slug remains unique.
+              - Set the publishing date when opening a draft.
+              - Update the record.
+        
+        - Remove Job Opening
+            - Functionality Root: DELETE /api/job-openings/{id}
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - JobOpeningId
+            - Functionality Output:
+              - Success confirmation.
+            - Functionality Workflow:
+              - Find the job opening.
+              - Soft-delete it.
+              - Remove it from the public careers page.

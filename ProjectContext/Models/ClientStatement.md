@@ -1,0 +1,91 @@
+- Model Name: Client Statement
+    - Properties:
+        - Id
+        - OurClientId
+        - ClientName
+        - ClientPosition
+        - CompanyName
+        - Statement
+        - ClientImage
+        - Rating
+        - IsPublished
+        - IsFeatured
+        - DisplayOrder
+        - CreatedAt
+    
+    - Functionalities 
+       
+        - Create Client Statement
+            - Functionality Root: POST /api/client-statements
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - OurClientId
+              - ClientName
+              - ClientPosition
+              - CompanyName
+              - Statement
+              - ClientImage
+              - Rating
+              - IsPublished
+              - IsFeatured
+              - DisplayOrder
+            - Functionality Output:
+              - Created client statement.
+            - Functionality Workflow:
+              - Validate the client name and statement.
+              - Validate OurClientId when provided.
+              - Automatically use the linked client's company name when appropriate.
+              - Validate that the rating is between 1 and 5.
+              - Validate the client image
+              - Create the statement.
+        
+        - List Client Statements
+            - Functionality Root: GET /api/client-statements
+            - Functionality Security: Public
+            - Functionality Input:
+              - IsFeatured
+              - ClientId
+            - Functionality Output:
+              - List of published client statements.
+            - Functionality Workflow:
+              - Return only published, non-deleted statements.
+              - Apply featured and client filtering.
+              - Order by DisplayOrder , then creation date.
+
+        - Get Client Statement
+            - Functionality Root: GET /api/client-statements/{id}
+            - Functionality Security: Public
+            - Functionality Input:
+              - ClientStatementId
+            - Functionality Output:
+              - Client-statement details.
+            - Functionality Workflow:
+              - Find the statement.
+              - Ensure it is published and not deleted.
+              - Include basic related-client information when available.
+
+        - Update Client Statement
+            - Functionality Root: PUT /api/client-statements/{id}
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - ClientStatementId
+              - All editable client-statement properties
+            - Functionality Output:
+              - Updated client statement.
+            - Functionality Workflow:
+              - Find the client statement.
+              - Apply the same validation used during creation.
+              - Validate and replace the client image when provided.
+              - Update the statement.
+
+        - Remove Client Statement
+            - Functionality Root: DELETE /api/client-statements/{id}
+            - Functionality Security: Authenticated
+            - Functionality Input:
+              - ClientStatementId
+            - Functionality Output:
+              - Success confirmation.
+            - Functionality Workflow:
+              - Find the statement.
+              - Soft-delete it.
+              - Remove it from public testimonial sections.
