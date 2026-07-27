@@ -1,0 +1,8 @@
+# Root-level gitignore
+.DS_Store
+*.log
+Thumbs.db
+
+# Keep public-html build output in git (it's the deployable artifact)
+# But ignore the node_modules at root level if any
+node_modules/
