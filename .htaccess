@@ -1,6 +1,5 @@
 Options -Indexes
 
-# ─── Block direct access to sensitive directories ─────────────────────────────
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
@@ -9,20 +8,19 @@ Options -Indexes
     RewriteCond %{HTTPS} off
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-    # ── Block access to source code and sensitive files ────────────────────────
+    # ── Block direct access to source code and sensitive files ─────────────────
     RewriteRule ^(backend/(?!public/)|frontend/|\.git/|deploy\.sh) - [F,L]
 
     # ── Route /api/* → Laravel backend ────────────────────────────────────────
     RewriteRule ^api(/.*)?$ backend/public/index.php [QSA,L]
 
-    # ── Serve JS/CSS/image/font assets from public-html/assets/ ───────────────
-    # Pattern match is reliable — Vite always outputs assets into /assets/
-    RewriteRule ^(assets/.+)$ public-html/$1 [L]
+    # ── Serve real files directly (JS, CSS, images in public-html/) ───────────
+    # Vite builds with base=/public-html/ so assets are at /public-html/assets/*
+    # Apache serves ~/public_html/public-html/assets/* directly — no rewrite needed
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^ - [L]
 
-    # ── Serve other known static files (favicon, robots, manifest) ────────────
-    RewriteRule ^(favicon\.ico|robots\.txt|manifest\.json|sitemap\.xml)$ public-html/$1 [L]
-
-    # ── All other routes → React SPA index.html ───────────────────────────────
+    # ── All other routes → React SPA ──────────────────────────────────────────
     RewriteRule ^ public-html/index.html [L]
 </IfModule>
 
@@ -30,7 +28,6 @@ Options -Indexes
 <IfModule mod_headers.c>
     Header always set X-Content-Type-Options "nosniff"
     Header always set X-Frame-Options "SAMEORIGIN"
-    Header always set X-XSS-Protection "1; mode=block"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
