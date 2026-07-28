@@ -69,8 +69,16 @@ export const api = {
   get: <T>(endpoint: string) => request<T>(endpoint),
   post: <T>(endpoint: string, body: FormData | Record<string, any>) =>
     request<T>(endpoint, { method: 'POST', body }),
-  put: <T>(endpoint: string, body: FormData | Record<string, any>) =>
-    request<T>(endpoint, { method: 'PUT', body }),
+  put: <T>(endpoint: string, body: FormData | Record<string, any>) => {
+    // PHP only populates $_FILES for POST requests.
+    // Use method-spoofing: send as POST with _method=PUT so Laravel routes it correctly
+    // AND file uploads work.
+    if (body instanceof FormData) {
+      body.append('_method', 'PUT');
+      return request<T>(endpoint, { method: 'POST', body });
+    }
+    return request<T>(endpoint, { method: 'PUT', body });
+  },
   delete: <T>(endpoint: string) => request<T>(endpoint, { method: 'DELETE' }),
 };
 

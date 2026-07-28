@@ -508,7 +508,7 @@ export default function LandingPage() {
             <div className="space-y-4 text-sm font-medium text-white/70">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary"><Mail className="w-4 h-4" /></div>
-                <span>contact@millionmobile.ly</span>
+                <span>contact@milliontechnology.ly</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary"><Building className="w-4 h-4" /></div>

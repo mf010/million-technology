@@ -40,9 +40,9 @@ Route::prefix('posts')->group(function () {
 
 // ── Protected post routes (JWT token required) ────────────────────────────
 Route::prefix('posts')->middleware('auth:api')->group(function () {
-    Route::post  ('/',    [PostController::class, 'store']);    // Create post
-    Route::put   ('/{id}',[PostController::class, 'update']);  // Update post
-    Route::delete('/{id}',[PostController::class, 'destroy']); // Soft-delete post
+    Route::post                ('/',    [PostController::class, 'store']);    // Create post
+    Route::match(['PUT','POST'],'/{id}',[PostController::class, 'update']);  // Update (supports _method spoofing)
+    Route::delete              ('/{id}',[PostController::class, 'destroy']); // Soft-delete post
 });
 
 // ── Public job opening routes ─────────────────────────────────────────────
@@ -53,9 +53,9 @@ Route::prefix('job-openings')->group(function () {
 
 // ── Protected job opening routes (JWT token required) ────────────────────
 Route::prefix('job-openings')->middleware('auth:api')->group(function () {
-    Route::post  ('/',    [JobOpeningController::class, 'store']);   // Create job opening
-    Route::put   ('/{id}',[JobOpeningController::class, 'update']);  // Update job opening
-    Route::delete('/{id}',[JobOpeningController::class, 'destroy']); // Soft-delete job opening
+    Route::post                ('/',    [JobOpeningController::class, 'store']);   // Create job opening
+    Route::match(['PUT','POST'],'/{id}',[JobOpeningController::class, 'update']);  // Update (supports _method spoofing)
+    Route::delete              ('/{id}',[JobOpeningController::class, 'destroy']); // Soft-delete job opening
 });
 
 // ── Public client reach routes (rate-limited) ─────────────────────────────
@@ -65,10 +65,10 @@ Route::prefix('client-reach')->middleware('throttle:30,1')->group(function () {
 
 // ── Protected client reach routes (JWT token required) ───────────────────
 Route::prefix('client-reach')->middleware('auth:api')->group(function () {
-    Route::get   ('/',    [ClientReachController::class, 'index']);   // List messages
-    Route::get   ('/{id}',[ClientReachController::class, 'show']);    // Get single message
-    Route::put   ('/{id}',[ClientReachController::class, 'update']);  // Update status / notes
-    Route::delete('/{id}',[ClientReachController::class, 'destroy']); // Soft-delete
+    Route::get                 ('/',    [ClientReachController::class, 'index']);   // List messages
+    Route::get                 ('/{id}',[ClientReachController::class, 'show']);    // Get single message
+    Route::match(['PUT','POST'],'/{id}',[ClientReachController::class, 'update']);  // Update (supports _method spoofing)
+    Route::delete              ('/{id}',[ClientReachController::class, 'destroy']); // Soft-delete
 });
 
 // ── Public service routes ─────────────────────────────────────────
@@ -79,9 +79,9 @@ Route::prefix('services')->group(function () {
 
 // ── Protected service routes (JWT token required) ──────────────────────
 Route::prefix('services')->middleware('auth:api')->group(function () {
-    Route::post  ('/',    [ServiceController::class, 'store']);   // Create service
-    Route::put   ('/{id}',[ServiceController::class, 'update']);  // Update service
-    Route::delete('/{id}',[ServiceController::class, 'destroy']); // Soft-delete service
+    Route::post                ('/',    [ServiceController::class, 'store']);   // Create service
+    Route::match(['PUT','POST'],'/{id}',[ServiceController::class, 'update']);  // Update (supports _method spoofing)
+    Route::delete              ('/{id}',[ServiceController::class, 'destroy']); // Soft-delete service
 });
 
 // ── Public our-clients routes ────────────────────────────────────────
@@ -92,9 +92,9 @@ Route::prefix('our-clients')->group(function () {
 
 // ── Protected our-clients routes (JWT token required) ─────────────────────
 Route::prefix('our-clients')->middleware('auth:api')->group(function () {
-    Route::post  ('/',    [OurClientController::class, 'store']);   // Create client
-    Route::put   ('/{id}',[OurClientController::class, 'update']);  // Update client
-    Route::delete('/{id}',[OurClientController::class, 'destroy']); // Soft-delete client
+    Route::post                ('/',    [OurClientController::class, 'store']);   // Create client
+    Route::match(['PUT','POST'],'/{id}',[OurClientController::class, 'update']);  // Update (supports _method spoofing)
+    Route::delete              ('/{id}',[OurClientController::class, 'destroy']); // Soft-delete client
 });
 
 // ── Public previous-projects routes ─────────────────────────────────
@@ -105,9 +105,9 @@ Route::prefix('previous-projects')->group(function () {
 
 // ── Protected previous-projects routes (JWT token required) ────────────────
 Route::prefix('previous-projects')->middleware('auth:api')->group(function () {
-    Route::post  ('/',    [PreviousProjectController::class, 'store']);   // Create project
-    Route::put   ('/{id}',[PreviousProjectController::class, 'update']);  // Update project
-    Route::delete('/{id}',[PreviousProjectController::class, 'destroy']); // Soft-delete project
+    Route::post                ('/',    [PreviousProjectController::class, 'store']);   // Create project
+    Route::match(['PUT','POST'],'/{id}',[PreviousProjectController::class, 'update']);  // Update (supports _method spoofing)
+    Route::delete              ('/{id}',[PreviousProjectController::class, 'destroy']); // Soft-delete project
 });
 
 // ── Public client-statements routes ───────────────────────────────────
@@ -118,7 +118,7 @@ Route::prefix('client-statements')->group(function () {
 
 // ── Protected client-statements routes (JWT token required) ────────────────
 Route::prefix('client-statements')->middleware('auth:api')->group(function () {
-    Route::post  ('/',    [ClientStatementController::class, 'store']);   // Create statement
-    Route::put   ('/{id}',[ClientStatementController::class, 'update']);  // Update statement
-    Route::delete('/{id}',[ClientStatementController::class, 'destroy']); // Soft-delete statement
+    Route::post                ('/',    [ClientStatementController::class, 'store']);   // Create statement
+    Route::match(['PUT','POST'],'/{id}',[ClientStatementController::class, 'update']);  // Update (supports _method spoofing)
+    Route::delete              ('/{id}',[ClientStatementController::class, 'destroy']); // Soft-delete statement
 });

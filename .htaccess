@@ -14,6 +14,9 @@ Options -Indexes
     # ── Route /api/* → Laravel backend ────────────────────────────────────────
     RewriteRule ^api(/.*)?$ backend/public/index.php [QSA,L]
 
+    # ── Serve Laravel storage files (uploaded images/files) ──────────────────
+    RewriteRule ^storage/(.*)$ backend/public/storage/$1 [L]
+
     # ── Serve real files directly (JS, CSS, images in public-html/) ───────────
     # Vite builds with base=/public-html/ so assets are at /public-html/assets/*
     # Apache serves ~/public_html/public-html/assets/* directly — no rewrite needed

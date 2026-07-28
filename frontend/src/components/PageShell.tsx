@@ -65,7 +65,7 @@ function PublicFooter() {
   const { isArabic } = useLanguage();
 
   return (
-    <footer className="border-t border-border-subtle/10 bg-surface/80 backdrop-blur-xl pt-12 pb-8 px-6 relative z-10 mt-16">
+    <footer className="border-t border-border-subtle/10 bg-surface/80 backdrop-blur-xl pt-12 pb-8 px-6 relative z-10">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
         <div className="flex items-center gap-3">
           <img src={logoImg} alt="Million Technologies Logo" className="w-8 h-8 object-contain rounded-xl" />
@@ -85,10 +85,10 @@ function PublicFooter() {
 
 export default function PageShell({ children }: { children: ReactNode }) {
   return (
-    <main className="relative min-h-screen selection:bg-primary selection:text-white overflow-hidden text-white">
+    <main className="relative min-h-screen flex flex-col selection:bg-primary selection:text-white overflow-hidden text-white">
       <Background3D />
       <PublicNavbar />
-      <div className="pt-16">
+      <div className="flex-1 pt-16">
         {children}
       </div>
       <PublicFooter />
