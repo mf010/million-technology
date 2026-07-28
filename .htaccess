@@ -1,0 +1,50 @@
+Options -Indexes
+
+# ─── Block direct access to sensitive directories ─────────────────────────────
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Block access to backend source, frontend source, git, and config files
+    RewriteRule ^(backend/(?!public/)|frontend/|\.git/|deploy\.sh|.*\.md$) - [F,L]
+
+    # ── Force HTTPS ────────────────────────────────────────────────────────────
+    RewriteCond %{HTTPS} off
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # ── Route /api/* → Laravel backend ────────────────────────────────────────
+    RewriteRule ^api(/.*)?$ backend/public/index.php [QSA,L]
+
+    # ── Serve existing static files from public-html/ ─────────────────────────
+    # e.g. /assets/index.js → public-html/assets/index.js
+    RewriteCond %{DOCUMENT_ROOT}/public-html%{REQUEST_URI} -f
+    RewriteRule ^ public-html%{REQUEST_URI} [L]
+
+    # ── All other routes → React SPA index.html ───────────────────────────────
+    RewriteRule ^ public-html/index.html [L]
+</IfModule>
+
+# ─── Security headers ─────────────────────────────────────────────────────────
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ─── Gzip Compression ─────────────────────────────────────────────────────────
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json
+</IfModule>
+
+# ─── Browser caching for static assets ───────────────────────────────────────
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
