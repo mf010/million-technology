@@ -8,10 +8,11 @@ import { ourClientService } from '../../services/ourClientService';
 import { PreviousProject } from '../../models/previousProject';
 import { OurClient } from '../../models/ourClient';
 import { PaginatedResponse } from '../../models/post';
+import { STORAGE_URL } from '../../lib/api';
 
 const inputCls = 'w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/20 text-sm outline-none focus:border-primary/50 transition-all';
 const labelCls = 'block text-white/50 text-xs font-medium mb-1.5';
-const STORAGE = 'http://localhost:8001/storage/';
+const STORAGE = STORAGE_URL;
 
 const emptyForm = { title: '', title_ar: '', client_display_name: '', client_display_name_ar: '', short_description: '', short_description_ar: '', description: '', description_ar: '', challenge: '', challenge_ar: '', solution: '', solution_ar: '', results: '', results_ar: '', technologies: '', technologies_ar: '', project_url: '', completed_at: '', is_featured: false, is_published: false, display_order: '0', our_client_id: '' };
 

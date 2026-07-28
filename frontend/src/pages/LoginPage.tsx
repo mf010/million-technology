@@ -4,6 +4,7 @@ import { motion } from 'motion/react';
 import { Eye, EyeOff, LogIn } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { authService } from '../services/authService';
+import logoImg from '../../assets/Logo.png';
 
 export default function LoginPage() {
   const { isAuthenticated, login } = useAuth();
@@ -52,7 +53,7 @@ export default function LoginPage() {
           {/* Header */}
           <div className="flex items-center gap-3 mb-8">
             <img
-              src="/assets/Logo.png"
+              src={logoImg}
               alt="Million Technologies"
               className="w-10 h-10 object-contain rounded-2xl shadow-lg shadow-primary/30"
             />

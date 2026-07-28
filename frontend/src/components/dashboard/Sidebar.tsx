@@ -1,22 +1,21 @@
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
-  Users,
-  Layers,
   FileText,
   Briefcase,
+  Wrench,
   FolderOpen,
   Building2,
   Star,
   MessageSquare,
 } from 'lucide-react';
+import logoImg from '../../../assets/Logo.png';
 
 const navItems = [
   { to: '/dashboard', label: 'Overview', icon: LayoutDashboard, end: true },
-  { to: '/dashboard/users', label: 'Users', icon: Users },
-  { to: '/dashboard/services', label: 'Services', icon: Layers },
-  { to: '/dashboard/posts', label: 'Posts', icon: FileText },
-  { to: '/dashboard/job-openings', label: 'Job Openings', icon: Briefcase },
+  { to: '/dashboard/posts', label: 'Posts & Insights', icon: FileText },
+  { to: '/dashboard/job-openings', label: 'Careers', icon: Briefcase },
+  { to: '/dashboard/services', label: 'Services', icon: Wrench },
   { to: '/dashboard/previous-projects', label: 'Projects', icon: FolderOpen },
   { to: '/dashboard/our-clients', label: 'Clients', icon: Building2 },
   { to: '/dashboard/client-statements', label: 'Testimonials', icon: Star },
@@ -29,7 +28,7 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="px-6 h-16 flex items-center gap-3 border-b border-white/10">
         <img
-          src="/assets/Logo.png"
+          src={logoImg}
           alt="Million Technologies"
           className="w-8 h-8 object-contain rounded-xl shadow-lg shadow-primary/20"
         />

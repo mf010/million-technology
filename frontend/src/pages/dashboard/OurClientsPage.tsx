@@ -5,10 +5,11 @@ import Modal from '../../components/dashboard/Modal';
 import DataTable from '../../components/dashboard/DataTable';
 import { ourClientService } from '../../services/ourClientService';
 import { OurClient } from '../../models/ourClient';
+import { STORAGE_URL } from '../../lib/api';
 
 const inputCls = 'w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/20 text-sm outline-none focus:border-primary/50 transition-all';
 const labelCls = 'block text-white/50 text-xs font-medium mb-1.5';
-const STORAGE = 'http://localhost:8001/storage/';
+const STORAGE = STORAGE_URL;
 
 const emptyForm = { name: '', website_url: '', description: '', description_ar: '', is_featured: false, is_active: true, display_order: 0 };
 

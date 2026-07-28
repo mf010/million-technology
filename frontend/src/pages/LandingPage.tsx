@@ -34,8 +34,8 @@ import { PreviousProject } from '../models/previousProject';
 import { OurClient } from '../models/ourClient';
 import { ClientStatement } from '../models/clientStatement';
 import { JobOpening } from '../models/jobOpening';
-
-const STORAGE = 'http://localhost:8001/storage/';
+import logoImg from '../../assets/Logo.png';
+import { STORAGE_URL } from '../lib/api';
 
 function Navbar() {
   const { language, setLanguage, isArabic } = useLanguage();
@@ -45,7 +45,7 @@ function Navbar() {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <img
-            src="/assets/Logo.png"
+            src={logoImg}
             alt="Million Technologies Logo"
             className="w-9 h-9 object-contain rounded-xl shadow-lg shadow-primary/20"
           />
@@ -272,7 +272,7 @@ export default function LandingPage() {
               <div className="h-48 overflow-hidden relative bg-white/5">
                 {proj.cover_image ? (
                   <img
-                    src={STORAGE + proj.cover_image}
+                    src={STORAGE_URL + proj.cover_image}
                     alt={proj.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
@@ -331,7 +331,7 @@ export default function LandingPage() {
                 className="h-10 opacity-40 hover:opacity-100 transition-opacity"
               >
                 {client.logo ? (
-                  <img src={STORAGE + client.logo} alt={client.name} className="h-full object-contain filter grayscale invert" />
+                  <img src={STORAGE_URL + client.logo} alt={client.name} className="h-full object-contain filter grayscale invert" />
                 ) : (
                   <span className="text-white text-lg font-bold tracking-tight">{client.name}</span>
                 )}
@@ -376,7 +376,7 @@ export default function LandingPage() {
                 </div>
                 <div className="flex items-center gap-3 border-t border-white/5 pt-4">
                   {stmt.client_image ? (
-                    <img src={STORAGE + stmt.client_image} className="w-10 h-10 rounded-full object-cover bg-white/5 border border-white/10" alt={stmt.client_name} />
+                    <img src={STORAGE_URL + stmt.client_image} className="w-10 h-10 rounded-full object-cover bg-white/5 border border-white/10" alt={stmt.client_name} />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
                       <User className="w-4 h-4 text-white/30" />
@@ -420,7 +420,7 @@ export default function LandingPage() {
               >
                 {post.image ? (
                   <div className="h-44 overflow-hidden relative bg-white/5">
-                    <img src={STORAGE + post.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={post.title} />
+                    <img src={STORAGE_URL + post.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={post.title} />
                   </div>
                 ) : null}
                 <div className="p-6 flex-1 flex flex-col justify-between">
@@ -575,7 +575,7 @@ export default function LandingPage() {
       <footer className="border-t border-border-subtle/10 bg-surface/80 backdrop-blur-xl pt-16 pb-8 px-6 relative z-10">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-center items-center gap-8">
           <div className="flex items-center gap-3">
-            <img src="/assets/Logo.png" alt="Million Technologies Logo" className="w-8 h-8 object-contain rounded-xl" />
+            <img src={logoImg} alt="Million Technologies Logo" className="w-8 h-8 object-contain rounded-xl" />
             <span className="font-semibold text-white/80 tracking-tight">Million Technologies</span>
           </div>
         </div>

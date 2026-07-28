@@ -7,10 +7,11 @@ import { clientStatementService } from '../../services/clientStatementService';
 import { ourClientService } from '../../services/ourClientService';
 import { ClientStatement } from '../../models/clientStatement';
 import { OurClient } from '../../models/ourClient';
+import { STORAGE_URL } from '../../lib/api';
 
 const inputCls = 'w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/20 text-sm outline-none focus:border-primary/50 transition-all';
 const labelCls = 'block text-white/50 text-xs font-medium mb-1.5';
-const STORAGE = 'http://localhost:8001/storage/';
+const STORAGE = STORAGE_URL;
 
 const emptyForm = { client_name: '', client_name_ar: '', client_position: '', client_position_ar: '', company_name: '', company_name_ar: '', statement: '', statement_ar: '', rating: '5', is_published: false, is_featured: false, display_order: '0', our_client_id: '' };
 

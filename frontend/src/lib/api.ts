@@ -1,4 +1,5 @@
 const BASE_URL = import.meta.env.VITE_API_URL ?? '/api';
+export const STORAGE_URL = import.meta.env.VITE_STORAGE_URL ?? '/storage/';
 
 function getToken(): string | null {
   return localStorage.getItem('auth_token');
