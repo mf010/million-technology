@@ -99,28 +99,21 @@ function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface/80 backdrop-blur-md border border-border-subtle/10 text-sm font-medium text-white/80 mb-8">
-            <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-            {isArabic ? 'نقدّم منصة مليون 2.0' : 'Introducing Million Platform 2.0'}
+          <div className="bg-surface/50 backdrop-blur-2xl border border-white/10 p-8 md:p-12 rounded-[2.5rem] mb-10 shadow-2xl inline-block">
+            <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-[1.1]">
+              {isArabic ? (
+                <>
+                  نصنع <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">المليون القادم</span>.
+                </>
+              ) : (
+                <>
+                  Engineering the <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Next Million</span>.
+                </>
+              )}
+            </h1>
           </div>
-          <h1 className="text-6xl md:text-8xl font-bold tracking-tighter mb-6 leading-[1.1]">
-            {isArabic ? (
-              <>
-                نصنع <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">المليون القادم</span>.
-              </>
-            ) : (
-              <>
-                Engineering the <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Next Million</span>.
-              </>
-            )}
-          </h1>
-          <p className="text-lg md:text-xl text-white/60 mb-10 max-w-2xl mx-auto font-medium leading-relaxed">
-            {isArabic
-              ? 'مليون تكنولوجيز تبني حلولاً مرنة وذكية وقابلة للتوسع للويب الحديث. استمتع بأداء لا مثيل له داخل واجهة أنيقة مستوحاة من iOS.'
-              : 'Million Technologies builds fluid, scalable, and intelligent solutions for the modern web. Experience uncompromised performance inside a beautiful iOS-inspired interface.'}
-          </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
               href="#contact"
@@ -220,9 +213,6 @@ export default function LandingPage() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">{isArabic ? 'خدماتنا الأساسية' : 'Core Services'}</h2>
-          <p className="text-white/60 text-lg max-w-xl mx-auto">
-            {isArabic ? 'إمكانيات عالية الأداء وموديولية مصممة لتوسيع نظامك التقني.' : 'Modular, high-performance capabilities tailored to scale your product ecosystem.'}
-          </p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -512,11 +502,11 @@ export default function LandingPage() {
             <div className="space-y-4 text-sm font-medium text-white/70">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary"><Mail className="w-4 h-4" /></div>
-                <span>hello@milliontechnologies.com</span>
+                <span>contact@millionmobile.ly</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-primary"><Building className="w-4 h-4" /></div>
-                <span>Infinite Loop, Cupertino, CA</span>
+                <span>Libya, Tripoli</span>
               </div>
             </div>
           </div>
@@ -583,16 +573,10 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-border-subtle/10 bg-surface/80 backdrop-blur-xl pt-16 pb-8 px-6 relative z-10">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-center items-center gap-8">
           <div className="flex items-center gap-3">
             <img src="/assets/Logo.png" alt="Million Technologies Logo" className="w-8 h-8 object-contain rounded-xl" />
             <span className="font-semibold text-white/80 tracking-tight">Million Technologies</span>
-          </div>
-          <div className="flex gap-8 text-sm font-medium text-white/50">
-            <a href="#" className="hover:text-white transition-colors">Privacy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms</a>
-            <a href="#" className="hover:text-white transition-colors">Twitter</a>
-            <a href="#" className="hover:text-white transition-colors">GitHub</a>
           </div>
         </div>
       </footer>

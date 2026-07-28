@@ -10,7 +10,7 @@ const inputCls = 'w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.
 const labelCls = 'block text-white/50 text-xs font-medium mb-1.5';
 const STORAGE = 'http://localhost:8001/storage/';
 
-const emptyForm = { name: '', website_url: '', description: '', is_featured: false, is_active: true, display_order: 0 };
+const emptyForm = { name: '', website_url: '', description: '', description_ar: '', is_featured: false, is_active: true, display_order: 0 };
 
 export default function OurClientsPage() {
   const [clients, setClients] = useState<OurClient[]>([]);
@@ -34,6 +34,7 @@ export default function OurClientsPage() {
     fd.append('name', form.name);
     if (form.website_url) fd.append('website_url', form.website_url);
     if (form.description) fd.append('description', form.description);
+    if (form.description_ar) fd.append('description_ar', form.description_ar);
     fd.append('is_featured', form.is_featured ? '1' : '0');
     fd.append('is_active', form.is_active ? '1' : '0');
     fd.append('display_order', String(form.display_order));
@@ -66,6 +67,7 @@ export default function OurClientsPage() {
       <div><label className={labelCls}>Name *</label><input className={inputCls} value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} /></div>
       <div><label className={labelCls}>Website URL</label><input className={inputCls} value={form.website_url} onChange={e => setForm(f => ({ ...f, website_url: e.target.value }))} /></div>
       <div><label className={labelCls}>Description</label><textarea rows={3} className={inputCls} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} /></div>
+      <div><label className={labelCls}>Description (AR)</label><textarea dir="rtl" rows={3} className={inputCls} value={form.description_ar} onChange={e => setForm(f => ({ ...f, description_ar: e.target.value }))} /></div>
       <div><label className={labelCls}>Logo</label><input type="file" accept="image/*" onChange={e => setLogoFile(e.target.files?.[0] ?? null)} className="text-white/50 text-sm" /></div>
       <div><label className={labelCls}>Display Order</label><input type="number" className={inputCls} value={form.display_order} onChange={e => setForm(f => ({ ...f, display_order: Number(e.target.value) }))} /></div>
       <div className="flex gap-6">
@@ -92,7 +94,7 @@ export default function OurClientsPage() {
               { key: 'is_active', label: 'Active', render: r => <span className={r.is_active ? 'text-green-400 text-xs' : 'text-white/30 text-xs'}>{r.is_active ? 'Active' : 'Inactive'}</span> },
               { key: 'actions', label: '', render: row => (
                 <div className="flex gap-2 justify-end">
-                  <button onClick={() => { setEditTarget(row); setForm({ name: row.name, website_url: row.website_url ?? '', description: row.description ?? '', is_featured: row.is_featured, is_active: row.is_active, display_order: row.display_order }); setLogoFile(null); setFormError(''); }} className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-all"><Pencil className="w-3.5 h-3.5" /></button>
+                  <button onClick={() => { setEditTarget(row); setForm({ name: row.name, website_url: row.website_url ?? '', description: row.description ?? '', description_ar: row.description_ar ?? '', is_featured: row.is_featured, is_active: row.is_active, display_order: row.display_order }); setLogoFile(null); setFormError(''); }} className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-all"><Pencil className="w-3.5 h-3.5" /></button>
                   <button onClick={() => setDeleteTarget(row)} className="p-1.5 rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
                 </div>
               )},

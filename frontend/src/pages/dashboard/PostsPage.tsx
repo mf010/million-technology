@@ -10,7 +10,7 @@ const inputCls = 'w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.
 const labelCls = 'block text-white/50 text-xs font-medium mb-1.5';
 
 const statusColor = { draft: 'text-white/40', published: 'text-green-400', archived: 'text-yellow-400' };
-const emptyForm = { title: '', excerpt: '', content: '', status: 'draft', seo_title: '', seo_description: '' };
+const emptyForm = { title: '', title_ar: '', excerpt: '', excerpt_ar: '', content: '', content_ar: '', status: 'draft', seo_title: '', seo_description: '' };
 
 export default function PostsPage() {
   const [data, setData] = useState<PaginatedResponse<Post> | null>(null);
@@ -59,14 +59,23 @@ export default function PostsPage() {
   const FormFields = () => (
     <div className="space-y-4">
       {formError && <p className="text-accent text-sm">{formError}</p>}
-      <div><label className={labelCls}>Title *</label><input className={inputCls} value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} /></div>
+      <div className="grid grid-cols-2 gap-4">
+        <div><label className={labelCls}>Title *</label><input className={inputCls} value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} /></div>
+        <div><label className={labelCls}>Title (AR)</label><input dir="rtl" className={inputCls} value={form.title_ar} onChange={e => setForm(f => ({ ...f, title_ar: e.target.value }))} /></div>
+      </div>
       <div><label className={labelCls}>Status</label>
         <select className={inputCls} value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value }))}>
           <option value="draft">Draft</option><option value="published">Published</option><option value="archived">Archived</option>
         </select>
       </div>
-      <div><label className={labelCls}>Excerpt</label><textarea rows={2} className={inputCls} value={form.excerpt} onChange={e => setForm(f => ({ ...f, excerpt: e.target.value }))} /></div>
-      <div><label className={labelCls}>Content</label><textarea rows={6} className={inputCls} value={form.content} onChange={e => setForm(f => ({ ...f, content: e.target.value }))} /></div>
+      <div className="grid grid-cols-2 gap-4">
+        <div><label className={labelCls}>Excerpt</label><textarea rows={2} className={inputCls} value={form.excerpt} onChange={e => setForm(f => ({ ...f, excerpt: e.target.value }))} /></div>
+        <div><label className={labelCls}>Excerpt (AR)</label><textarea dir="rtl" rows={2} className={inputCls} value={form.excerpt_ar} onChange={e => setForm(f => ({ ...f, excerpt_ar: e.target.value }))} /></div>
+      </div>
+      <div className="grid grid-cols-2 gap-4">
+        <div><label className={labelCls}>Content</label><textarea rows={6} className={inputCls} value={form.content} onChange={e => setForm(f => ({ ...f, content: e.target.value }))} /></div>
+        <div><label className={labelCls}>Content (AR)</label><textarea dir="rtl" rows={6} className={inputCls} value={form.content_ar} onChange={e => setForm(f => ({ ...f, content_ar: e.target.value }))} /></div>
+      </div>
       <div><label className={labelCls}>Cover Image</label><input type="file" accept="image/*" onChange={e => setImageFile(e.target.files?.[0] ?? null)} className="text-white/50 text-sm" /></div>
       <div><label className={labelCls}>SEO Title</label><input className={inputCls} value={form.seo_title} onChange={e => setForm(f => ({ ...f, seo_title: e.target.value }))} /></div>
       <div><label className={labelCls}>SEO Description</label><textarea rows={2} className={inputCls} value={form.seo_description} onChange={e => setForm(f => ({ ...f, seo_description: e.target.value }))} /></div>
@@ -90,7 +99,7 @@ export default function PostsPage() {
               { key: 'published_at', label: 'Published', render: r => r.published_at ? new Date(r.published_at).toLocaleDateString() : '—' },
               { key: 'actions', label: '', render: row => (
                 <div className="flex gap-2 justify-end">
-                  <button onClick={() => { setEditTarget(row); setForm({ title: row.title, excerpt: row.excerpt ?? '', content: row.content ?? '', status: row.status, seo_title: row.seo_title ?? '', seo_description: row.seo_description ?? '' }); setFormError(''); }} className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-all"><Pencil className="w-3.5 h-3.5" /></button>
+                  <button onClick={() => { setEditTarget(row); setForm({ title: row.title, title_ar: row.title_ar ?? '', excerpt: row.excerpt ?? '', excerpt_ar: row.excerpt_ar ?? '', content: row.content ?? '', content_ar: row.content_ar ?? '', status: row.status, seo_title: row.seo_title ?? '', seo_description: row.seo_description ?? '' }); setFormError(''); }} className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-all"><Pencil className="w-3.5 h-3.5" /></button>
                   <button onClick={() => setDeleteTarget(row)} className="p-1.5 rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
                 </div>
               )},

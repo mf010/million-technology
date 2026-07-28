@@ -13,7 +13,7 @@ const inputCls = 'w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.
 const labelCls = 'block text-white/50 text-xs font-medium mb-1.5';
 const STORAGE = 'http://localhost:8001/storage/';
 
-const emptyForm = { title: '', client_display_name: '', short_description: '', description: '', challenge: '', solution: '', results: '', technologies: '', project_url: '', completed_at: '', is_featured: false, is_published: false, display_order: '0', our_client_id: '' };
+const emptyForm = { title: '', title_ar: '', client_display_name: '', client_display_name_ar: '', short_description: '', short_description_ar: '', description: '', description_ar: '', challenge: '', challenge_ar: '', solution: '', solution_ar: '', results: '', results_ar: '', technologies: '', technologies_ar: '', project_url: '', completed_at: '', is_featured: false, is_published: false, display_order: '0', our_client_id: '' };
 
 export default function PreviousProjectsPage() {
   const [data, setData] = useState<PaginatedResponse<PreviousProject> | null>(null);
@@ -37,7 +37,10 @@ export default function PreviousProjectsPage() {
   const buildFd = () => {
     const fd = new FormData();
     Object.entries(form).forEach(([k, v]) => {
-      if (k === 'technologies') { const arr = String(v).split(',').map(t => t.trim()).filter(Boolean); arr.forEach(t => fd.append('technologies[]', t)); }
+      if (k === 'technologies' || k === 'technologies_ar') { 
+        const arr = String(v).split(',').map(t => t.trim()).filter(Boolean); 
+        arr.forEach(t => fd.append(`${k}[]`, t)); 
+      }
       else if (v !== '' && v !== null) fd.append(k, k.startsWith('is_') ? (v ? '1' : '0') : String(v));
     });
     if (coverFile) fd.append('cover_image', coverFile);
@@ -66,7 +69,10 @@ export default function PreviousProjectsPage() {
   const FormFields = () => (
     <div className="grid grid-cols-2 gap-4">
       {formError && <p className="text-accent text-sm col-span-2">{formError}</p>}
-      <div className="col-span-2"><label className={labelCls}>Title *</label><input className={inputCls} value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} /></div>
+      
+      <div><label className={labelCls}>Title *</label><input className={inputCls} value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} /></div>
+      <div><label className={labelCls}>Title (AR)</label><input dir="rtl" className={inputCls} value={form.title_ar} onChange={e => setForm(f => ({ ...f, title_ar: e.target.value }))} /></div>
+      
       <div><label className={labelCls}>Linked Client</label>
         <select className={inputCls} value={form.our_client_id} onChange={e => setForm(f => ({ ...f, our_client_id: e.target.value }))}>
           <option value="">None</option>
@@ -74,16 +80,33 @@ export default function PreviousProjectsPage() {
         </select>
       </div>
       <div><label className={labelCls}>Client Display Name</label><input className={inputCls} value={form.client_display_name} onChange={e => setForm(f => ({ ...f, client_display_name: e.target.value }))} /></div>
+      
+      <div className="col-span-2"><label className={labelCls}>Client Display Name (AR)</label><input dir="rtl" className={inputCls} value={form.client_display_name_ar} onChange={e => setForm(f => ({ ...f, client_display_name_ar: e.target.value }))} /></div>
+
       <div><label className={labelCls}>Completed At</label><input type="date" className={inputCls} value={form.completed_at} onChange={e => setForm(f => ({ ...f, completed_at: e.target.value }))} /></div>
       <div><label className={labelCls}>Display Order</label><input type="number" className={inputCls} value={form.display_order} onChange={e => setForm(f => ({ ...f, display_order: e.target.value }))} /></div>
-      <div className="col-span-2"><label className={labelCls}>Technologies (comma-separated)</label><input className={inputCls} value={form.technologies} onChange={e => setForm(f => ({ ...f, technologies: e.target.value }))} placeholder="React, Laravel, MySQL" /></div>
-      <div className="col-span-2"><label className={labelCls}>Short Description</label><textarea rows={2} className={inputCls} value={form.short_description} onChange={e => setForm(f => ({ ...f, short_description: e.target.value }))} /></div>
-      <div className="col-span-2"><label className={labelCls}>Description</label><textarea rows={3} className={inputCls} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} /></div>
-      <div className="col-span-2"><label className={labelCls}>Challenge</label><textarea rows={2} className={inputCls} value={form.challenge} onChange={e => setForm(f => ({ ...f, challenge: e.target.value }))} /></div>
-      <div className="col-span-2"><label className={labelCls}>Solution</label><textarea rows={2} className={inputCls} value={form.solution} onChange={e => setForm(f => ({ ...f, solution: e.target.value }))} /></div>
-      <div className="col-span-2"><label className={labelCls}>Results</label><textarea rows={2} className={inputCls} value={form.results} onChange={e => setForm(f => ({ ...f, results: e.target.value }))} /></div>
-      <div><label className={labelCls}>Project URL</label><input className={inputCls} value={form.project_url} onChange={e => setForm(f => ({ ...f, project_url: e.target.value }))} /></div>
-      <div><label className={labelCls}>Cover Image</label><input type="file" accept="image/*" onChange={e => setCoverFile(e.target.files?.[0] ?? null)} className="text-white/50 text-sm" /></div>
+      
+      <div><label className={labelCls}>Technologies (comma-separated)</label><input className={inputCls} value={form.technologies} onChange={e => setForm(f => ({ ...f, technologies: e.target.value }))} placeholder="React, Laravel, MySQL" /></div>
+      <div><label className={labelCls}>Technologies (AR) (comma-separated)</label><input dir="rtl" className={inputCls} value={form.technologies_ar} onChange={e => setForm(f => ({ ...f, technologies_ar: e.target.value }))} placeholder="React, Laravel, MySQL" /></div>
+      
+      <div><label className={labelCls}>Short Description</label><textarea rows={2} className={inputCls} value={form.short_description} onChange={e => setForm(f => ({ ...f, short_description: e.target.value }))} /></div>
+      <div><label className={labelCls}>Short Description (AR)</label><textarea dir="rtl" rows={2} className={inputCls} value={form.short_description_ar} onChange={e => setForm(f => ({ ...f, short_description_ar: e.target.value }))} /></div>
+      
+      <div><label className={labelCls}>Description</label><textarea rows={3} className={inputCls} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} /></div>
+      <div><label className={labelCls}>Description (AR)</label><textarea dir="rtl" rows={3} className={inputCls} value={form.description_ar} onChange={e => setForm(f => ({ ...f, description_ar: e.target.value }))} /></div>
+      
+      <div><label className={labelCls}>Challenge</label><textarea rows={2} className={inputCls} value={form.challenge} onChange={e => setForm(f => ({ ...f, challenge: e.target.value }))} /></div>
+      <div><label className={labelCls}>Challenge (AR)</label><textarea dir="rtl" rows={2} className={inputCls} value={form.challenge_ar} onChange={e => setForm(f => ({ ...f, challenge_ar: e.target.value }))} /></div>
+      
+      <div><label className={labelCls}>Solution</label><textarea rows={2} className={inputCls} value={form.solution} onChange={e => setForm(f => ({ ...f, solution: e.target.value }))} /></div>
+      <div><label className={labelCls}>Solution (AR)</label><textarea dir="rtl" rows={2} className={inputCls} value={form.solution_ar} onChange={e => setForm(f => ({ ...f, solution_ar: e.target.value }))} /></div>
+      
+      <div><label className={labelCls}>Results</label><textarea rows={2} className={inputCls} value={form.results} onChange={e => setForm(f => ({ ...f, results: e.target.value }))} /></div>
+      <div><label className={labelCls}>Results (AR)</label><textarea dir="rtl" rows={2} className={inputCls} value={form.results_ar} onChange={e => setForm(f => ({ ...f, results_ar: e.target.value }))} /></div>
+      
+      <div className="col-span-2"><label className={labelCls}>Project URL</label><input className={inputCls} value={form.project_url} onChange={e => setForm(f => ({ ...f, project_url: e.target.value }))} /></div>
+      <div className="col-span-2"><label className={labelCls}>Cover Image</label><input type="file" accept="image/*" onChange={e => setCoverFile(e.target.files?.[0] ?? null)} className="text-white/50 text-sm" /></div>
+      
       <div className="col-span-2 flex gap-6">
         <label className="flex items-center gap-2 text-white/60 text-sm cursor-pointer"><input type="checkbox" className="accent-primary" checked={form.is_featured} onChange={e => setForm(f => ({ ...f, is_featured: e.target.checked }))} />Featured</label>
         <label className="flex items-center gap-2 text-white/60 text-sm cursor-pointer"><input type="checkbox" className="accent-primary" checked={form.is_published} onChange={e => setForm(f => ({ ...f, is_published: e.target.checked }))} />Published</label>
@@ -109,7 +132,7 @@ export default function PreviousProjectsPage() {
               { key: 'is_published', label: 'Published', render: r => <span className={r.is_published ? 'text-green-400 text-xs' : 'text-white/30 text-xs'}>{r.is_published ? 'Yes' : 'No'}</span> },
               { key: 'actions', label: '', render: row => (
                 <div className="flex gap-2 justify-end">
-                  <button onClick={() => { setEditTarget(row); setForm({ title: row.title, client_display_name: row.client_display_name ?? '', short_description: row.short_description ?? '', description: row.description ?? '', challenge: row.challenge ?? '', solution: row.solution ?? '', results: row.results ?? '', technologies: (row.technologies ?? []).join(', '), project_url: row.project_url ?? '', completed_at: row.completed_at ?? '', is_featured: row.is_featured, is_published: row.is_published, display_order: String(row.display_order), our_client_id: String(row.our_client_id ?? '') }); setCoverFile(null); setFormError(''); }} className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-all"><Pencil className="w-3.5 h-3.5" /></button>
+                  <button onClick={() => { setEditTarget(row); setForm({ title: row.title, title_ar: row.title_ar ?? '', client_display_name: row.client_display_name ?? '', client_display_name_ar: row.client_display_name_ar ?? '', short_description: row.short_description ?? '', short_description_ar: row.short_description_ar ?? '', description: row.description ?? '', description_ar: row.description_ar ?? '', challenge: row.challenge ?? '', challenge_ar: row.challenge_ar ?? '', solution: row.solution ?? '', solution_ar: row.solution_ar ?? '', results: row.results ?? '', results_ar: row.results_ar ?? '', technologies: (row.technologies ?? []).join(', '), technologies_ar: (row.technologies_ar ?? []).join(', '), project_url: row.project_url ?? '', completed_at: row.completed_at ?? '', is_featured: row.is_featured, is_published: row.is_published, display_order: String(row.display_order), our_client_id: String(row.our_client_id ?? '') }); setCoverFile(null); setFormError(''); }} className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-all"><Pencil className="w-3.5 h-3.5" /></button>
                   <button onClick={() => setDeleteTarget(row)} className="p-1.5 rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
                 </div>
               )},

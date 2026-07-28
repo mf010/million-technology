@@ -9,7 +9,7 @@ import { Service } from '../../models/service';
 const inputCls = 'w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder-white/20 text-sm outline-none focus:border-primary/50 transition-all';
 const labelCls = 'block text-white/50 text-xs font-medium mb-1.5';
 
-const emptyForm = { title: '', short_description: '', description: '', display_order: '0', is_active: true, parent_id: '', seo_title: '', seo_description: '' };
+const emptyForm = { title: '', title_ar: '', short_description: '', short_description_ar: '', description: '', description_ar: '', display_order: '0', is_active: true, parent_id: '', seo_title: '', seo_description: '' };
 
 export default function ServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
@@ -83,7 +83,7 @@ export default function ServicesPage() {
                 key: 'actions', label: '',
                 render: (row) => (
                   <div className="flex gap-2 justify-end">
-                    <button onClick={() => { setEditTarget(row); setForm({ title: row.title, short_description: row.short_description ?? '', description: row.description ?? '', display_order: String(row.display_order), is_active: row.is_active, parent_id: String(row.parent_id ?? ''), seo_title: row.seo_title ?? '', seo_description: row.seo_description ?? '' }); setFormError(''); }} className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-all"><Pencil className="w-3.5 h-3.5" /></button>
+                    <button onClick={() => { setEditTarget(row); setForm({ title: row.title, title_ar: row.title_ar ?? '', short_description: row.short_description ?? '', short_description_ar: row.short_description_ar ?? '', description: row.description ?? '', description_ar: row.description_ar ?? '', display_order: String(row.display_order), is_active: row.is_active, parent_id: String(row.parent_id ?? ''), seo_title: row.seo_title ?? '', seo_description: row.seo_description ?? '' }); setFormError(''); }} className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-all"><Pencil className="w-3.5 h-3.5" /></button>
                     <button onClick={() => setDeleteTarget(row)} className="p-1.5 rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
                   </div>
                 ),
@@ -102,7 +102,9 @@ export default function ServicesPage() {
           <div className="space-y-4">
             {formError && <p className="text-accent text-sm">{formError}</p>}
             <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2"><label className={labelCls}>Title *</label><input className={inputCls} value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} /></div>
+              <div><label className={labelCls}>Title *</label><input className={inputCls} value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} /></div>
+              <div><label className={labelCls}>Title (AR)</label><input dir="rtl" className={inputCls} value={form.title_ar} onChange={e => setForm(f => ({ ...f, title_ar: e.target.value }))} /></div>
+              
               <div><label className={labelCls}>Parent Service</label>
                 <select className={inputCls} value={form.parent_id} onChange={e => setForm(f => ({ ...f, parent_id: e.target.value }))}>
                   <option value="">None (Top Level)</option>
@@ -110,11 +112,20 @@ export default function ServicesPage() {
                 </select>
               </div>
               <div><label className={labelCls}>Display Order</label><input type="number" className={inputCls} value={form.display_order} onChange={e => setForm(f => ({ ...f, display_order: e.target.value }))} /></div>
-              <div className="col-span-2"><label className={labelCls}>Short Description</label><textarea rows={2} className={inputCls} value={form.short_description} onChange={e => setForm(f => ({ ...f, short_description: e.target.value }))} /></div>
-              <div className="col-span-2"><label className={labelCls}>Description</label><textarea rows={4} className={inputCls} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} /></div>
+              
+              <div className="col-span-2 grid grid-cols-2 gap-4">
+                <div><label className={labelCls}>Short Description</label><textarea rows={2} className={inputCls} value={form.short_description} onChange={e => setForm(f => ({ ...f, short_description: e.target.value }))} /></div>
+                <div><label className={labelCls}>Short Description (AR)</label><textarea dir="rtl" rows={2} className={inputCls} value={form.short_description_ar} onChange={e => setForm(f => ({ ...f, short_description_ar: e.target.value }))} /></div>
+              </div>
+              
+              <div className="col-span-2 grid grid-cols-2 gap-4">
+                <div><label className={labelCls}>Description</label><textarea rows={4} className={inputCls} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} /></div>
+                <div><label className={labelCls}>Description (AR)</label><textarea dir="rtl" rows={4} className={inputCls} value={form.description_ar} onChange={e => setForm(f => ({ ...f, description_ar: e.target.value }))} /></div>
+              </div>
+              
               <div className="col-span-2 flex items-center gap-3">
-                <input type="checkbox" id="svc-active" checked={form.is_active} onChange={e => setForm(f => ({ ...f, is_active: e.target.checked }))} className="accent-primary" />
-                <label htmlFor="svc-active" className="text-white/60 text-sm">Active</label>
+                <input type="checkbox" id={`svc-active-${title}`} checked={form.is_active} onChange={e => setForm(f => ({ ...f, is_active: e.target.checked }))} className="accent-primary" />
+                <label htmlFor={`svc-active-${title}`} className="text-white/60 text-sm">Active</label>
               </div>
             </div>
             <button onClick={onSave} className="w-full py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-all">{title}</button>

@@ -11,7 +11,7 @@ const inputCls = 'w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.
 const labelCls = 'block text-white/50 text-xs font-medium mb-1.5';
 
 const statusColor: Record<string, string> = { draft: 'text-white/40', open: 'text-green-400', close: 'text-accent' };
-const emptyForm = { title: '', department: '', location: '', employment_type: 'full-time', workplace_type: 'on-site', summary: '', description: '', responsibilities: '', requirements: '', application_email: '', application_url: '', status: 'draft' };
+const emptyForm = { title: '', title_ar: '', department: '', department_ar: '', location: '', location_ar: '', employment_type: 'full-time', employment_type_ar: '', workplace_type: 'on-site', workplace_type_ar: '', summary: '', summary_ar: '', description: '', description_ar: '', responsibilities: '', responsibilities_ar: '', requirements: '', requirements_ar: '', application_email: '', application_url: '', status: 'draft' };
 
 export default function JobOpeningsPage() {
   const [data, setData] = useState<PaginatedResponse<JobOpening> | null>(null);
@@ -49,29 +49,50 @@ export default function JobOpeningsPage() {
     setDeleteTarget(null); load();
   };
 
-  const F = (key: string, label: string, type: 'input' | 'textarea' | 'select', opts?: string[]) => (
+  const F = (key: string, label: string, type: 'input' | 'textarea' | 'select', opts?: string[], isAr?: boolean) => (
     <div key={key}>
       <label className={labelCls}>{label}</label>
-      {type === 'textarea' ? <textarea rows={3} className={inputCls} value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} />
-        : type === 'select' ? <select className={inputCls} value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}>{opts!.map(o => <option key={o} value={o}>{o}</option>)}</select>
-        : <input className={inputCls} value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} />}
+      {type === 'textarea' ? <textarea rows={3} dir={isAr ? 'rtl' : 'ltr'} className={inputCls} value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} />
+        : type === 'select' ? <select dir={isAr ? 'rtl' : 'ltr'} className={inputCls} value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}>{opts!.map(o => <option key={o} value={o}>{o}</option>)}</select>
+        : <input dir={isAr ? 'rtl' : 'ltr'} className={inputCls} value={form[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} />}
     </div>
   );
 
   const FormContent = () => (
     <div className="grid grid-cols-2 gap-4">
       {formError && <p className="text-accent text-sm col-span-2">{formError}</p>}
-      <div className="col-span-2">{F('title', 'Title *', 'input')}</div>
-      {F('department', 'Department', 'input')} {F('location', 'Location', 'input')}
-      {F('employment_type', 'Employment Type', 'select', ['full-time','part-time','contract','internship','temporary'])}
-      {F('workplace_type', 'Workplace Type', 'select', ['on-site','remote','hybrid'])}
-      {F('status', 'Status', 'select', ['draft','open','close'])}
-      {F('application_email', 'Application Email', 'input')}
-      <div className="col-span-2">{F('application_url', 'Application URL', 'input')}</div>
-      <div className="col-span-2">{F('summary', 'Summary', 'textarea')}</div>
-      <div className="col-span-2">{F('description', 'Description *', 'textarea')}</div>
-      <div className="col-span-2">{F('responsibilities', 'Responsibilities', 'textarea')}</div>
-      <div className="col-span-2">{F('requirements', 'Requirements', 'textarea')}</div>
+      <div>{F('title', 'Title *', 'input')}</div>
+      <div>{F('title_ar', 'Title (AR)', 'input', undefined, true)}</div>
+      
+      <div>{F('department', 'Department', 'input')}</div>
+      <div>{F('department_ar', 'Department (AR)', 'input', undefined, true)}</div>
+
+      <div>{F('location', 'Location', 'input')}</div>
+      <div>{F('location_ar', 'Location (AR)', 'input', undefined, true)}</div>
+
+      <div>{F('employment_type', 'Employment Type', 'select', ['full-time','part-time','contract','internship','temporary'])}</div>
+      <div>{F('employment_type_ar', 'Employment Type (AR)', 'input', undefined, true)}</div>
+
+      <div>{F('workplace_type', 'Workplace Type', 'select', ['on-site','remote','hybrid'])}</div>
+      <div>{F('workplace_type_ar', 'Workplace Type (AR)', 'input', undefined, true)}</div>
+
+      <div>{F('status', 'Status', 'select', ['draft','open','close'])}</div>
+      <div className="col-span-1" />
+
+      <div>{F('application_email', 'Application Email', 'input')}</div>
+      <div>{F('application_url', 'Application URL', 'input')}</div>
+
+      <div>{F('summary', 'Summary', 'textarea')}</div>
+      <div>{F('summary_ar', 'Summary (AR)', 'textarea', undefined, true)}</div>
+
+      <div>{F('description', 'Description *', 'textarea')}</div>
+      <div>{F('description_ar', 'Description (AR)', 'textarea', undefined, true)}</div>
+
+      <div>{F('responsibilities', 'Responsibilities', 'textarea')}</div>
+      <div>{F('responsibilities_ar', 'Responsibilities (AR)', 'textarea', undefined, true)}</div>
+
+      <div>{F('requirements', 'Requirements', 'textarea')}</div>
+      <div>{F('requirements_ar', 'Requirements (AR)', 'textarea', undefined, true)}</div>
     </div>
   );
 
@@ -93,7 +114,7 @@ export default function JobOpeningsPage() {
               { key: 'status', label: 'Status', render: r => <span className={`text-xs font-medium ${statusColor[r.status]}`}>{r.status}</span> },
               { key: 'actions', label: '', render: row => (
                 <div className="flex gap-2 justify-end">
-                  <button onClick={() => { setEditTarget(row); setForm({ title: row.title, department: row.department ?? '', location: row.location ?? '', employment_type: row.employment_type, workplace_type: row.workplace_type, summary: row.summary ?? '', description: row.description, responsibilities: row.responsibilities ?? '', requirements: row.requirements ?? '', application_email: row.application_email ?? '', application_url: row.application_url ?? '', status: row.status }); setFormError(''); }} className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-all"><Pencil className="w-3.5 h-3.5" /></button>
+                  <button onClick={() => { setEditTarget(row); setForm({ title: row.title, title_ar: row.title_ar ?? '', department: row.department ?? '', department_ar: row.department_ar ?? '', location: row.location ?? '', location_ar: row.location_ar ?? '', employment_type: row.employment_type, employment_type_ar: row.employment_type_ar ?? '', workplace_type: row.workplace_type, workplace_type_ar: row.workplace_type_ar ?? '', summary: row.summary ?? '', summary_ar: row.summary_ar ?? '', description: row.description, description_ar: row.description_ar ?? '', responsibilities: row.responsibilities ?? '', responsibilities_ar: row.responsibilities_ar ?? '', requirements: row.requirements ?? '', requirements_ar: row.requirements_ar ?? '', application_email: row.application_email ?? '', application_url: row.application_url ?? '', status: row.status }); setFormError(''); }} className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-all"><Pencil className="w-3.5 h-3.5" /></button>
                   <button onClick={() => setDeleteTarget(row)} className="p-1.5 rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
                 </div>
               )},
