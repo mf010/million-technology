@@ -217,29 +217,33 @@ export default function LandingPage() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {services.map((svc, i) => (
-            <motion.div
-              key={svc.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.05 }}
-              className="bg-surface/50 backdrop-blur-2xl border border-white/10 p-8 rounded-[2rem] hover:bg-surface/70 transition-all hover:-translate-y-1.5 duration-300"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-6 text-primary">
-                <Layers className="w-5 h-5" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3">{t(svc.title, svc.title_ar)}</h3>
-              <p className="text-white/50 text-sm leading-relaxed mb-4">{t(svc.short_description, svc.short_description_ar)}</p>
-              {svc.sub_services && svc.sub_services.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {svc.sub_services.map(sub => (
-                    <span key={sub.id} className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-white/60">
-                      {t(sub.title, sub.title_ar)}
-                    </span>
-                  ))}
+            <Link key={svc.id} to={`/services/${svc.slug}`} className="block group">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                className="bg-surface/50 backdrop-blur-2xl border border-white/10 p-8 rounded-[2rem] hover:bg-surface/70 hover:border-primary/30 transition-all hover:-translate-y-1.5 duration-300 h-full"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-6 text-primary">
+                  <Layers className="w-5 h-5" />
                 </div>
-              )}
-            </motion.div>
+                <h3 className="text-xl font-semibold mb-3 group-hover:text-primary transition-colors">{t(svc.title, svc.title_ar)}</h3>
+                <p className="text-white/50 text-sm leading-relaxed mb-4">{t(svc.short_description, svc.short_description_ar)}</p>
+                {svc.sub_services && svc.sub_services.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {svc.sub_services.map(sub => (
+                      <span key={sub.id} className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-white/60">
+                        {t(sub.title, sub.title_ar)}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary/50 group-hover:text-primary group-hover:gap-2 transition-all mt-5">
+                  {isArabic ? 'اعرف المزيد' : 'Learn more'} <ChevronRight className={`w-3 h-3 ${isArabic ? 'rotate-180' : ''}`} />
+                </span>
+              </motion.div>
+            </Link>
           ))}
         </div>
       </section>
@@ -260,13 +264,13 @@ export default function LandingPage() {
 
         <div className="grid md:grid-cols-3 gap-8">
           {projects.map((proj, i) => (
+            <Link key={proj.id} to={`/projects/${proj.slug}`} className="block">
             <motion.div
-              key={proj.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.05 }}
-              className="bg-surface/40 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] overflow-hidden flex flex-col group hover:bg-surface/60 transition-all duration-300"
+              className="bg-surface/40 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] overflow-hidden flex flex-col group hover:bg-surface/60 hover:border-white/20 transition-all duration-300"
             >
               {/* Cover */}
               <div className="h-48 overflow-hidden relative bg-white/5">
@@ -313,6 +317,7 @@ export default function LandingPage() {
                 )}
               </div>
             </motion.div>
+            </Link>
           ))}
         </div>
       </section>
@@ -410,13 +415,13 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {posts.map((post, i) => (
+              <Link key={post.id} to={`/posts/${post.slug}`} className="block">
               <motion.div
-                key={post.id}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="bg-surface/30 backdrop-blur-2xl border border-white/5 rounded-[2rem] overflow-hidden flex flex-col group hover:border-white/20 transition-all duration-300"
+                className="bg-surface/30 backdrop-blur-2xl border border-white/5 rounded-[2rem] overflow-hidden flex flex-col group hover:border-primary/20 hover:bg-surface/50 transition-all duration-300 h-full"
               >
                 {post.image ? (
                   <div className="h-44 overflow-hidden relative bg-white/5">
@@ -437,6 +442,7 @@ export default function LandingPage() {
                   </span>
                 </div>
               </motion.div>
+              </Link>
             ))}
           </div>
         </section>
