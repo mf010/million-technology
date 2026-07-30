@@ -133,7 +133,11 @@ class PreviousProjectController extends Controller
         // Gallery images — multiple files
         $galleryPaths = [];
         if ($request->hasFile('gallery_images')) {
-            foreach ($request->file('gallery_images') as $file) {
+            $files = $request->file('gallery_images');
+            if (! is_array($files)) {
+                $files = [$files];
+            }
+            foreach ($files as $file) {
                 $galleryPaths[] = $this->storeGalleryImage($file);
             }
         }
@@ -318,7 +322,11 @@ class PreviousProjectController extends Controller
 
         // Append new gallery images
         if ($request->hasFile('gallery_images')) {
-            foreach ($request->file('gallery_images') as $file) {
+            $files = $request->file('gallery_images');
+            if (! is_array($files)) {
+                $files = [$files];
+            }
+            foreach ($files as $file) {
                 $currentGallery[] = $this->storeGalleryImage($file);
             }
         }

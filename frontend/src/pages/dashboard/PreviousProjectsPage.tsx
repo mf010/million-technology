@@ -164,19 +164,36 @@ export default function PreviousProjectsPage() {
               <div className="absolute bottom-0 left-0 right-0 bg-primary/80 text-[8px] text-white text-center py-0.5">New</div>
             </div>
           ))}
-          {/* Add button using native HTML label */}
-          <label className="w-20 h-20 rounded-xl border-2 border-dashed border-white/10 hover:border-primary/40 flex flex-col items-center justify-center text-white/30 hover:text-primary/60 transition-all cursor-pointer">
+          {/* Add button with transparent overlaid file input */}
+          <div className="relative w-20 h-20 rounded-xl border-2 border-dashed border-white/10 hover:border-primary/40 flex flex-col items-center justify-center text-white/30 hover:text-primary/60 transition-all overflow-hidden">
             <ImagePlus className="w-5 h-5 mb-1" />
             <span className="text-[9px]">Add</span>
             <input
               type="file"
               accept="image/*"
               multiple
-              onChange={e => { addGalleryFiles(e.target.files); e.target.value = ''; }}
-              className="hidden"
+              onChange={e => {
+                if (e.target.files && e.target.files.length > 0) {
+                  addGalleryFiles(e.target.files);
+                  e.target.value = '';
+                }
+              }}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
             />
-          </label>
+          </div>
         </div>
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={e => {
+            if (e.target.files && e.target.files.length > 0) {
+              addGalleryFiles(e.target.files);
+              e.target.value = '';
+            }
+          }}
+          className="text-white/50 text-xs mt-1 block"
+        />
       </div>
       
       <div className="col-span-2 flex gap-6">
