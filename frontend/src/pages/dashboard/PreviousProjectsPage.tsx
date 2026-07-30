@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Plus, Pencil, Trash2 } from 'lucide-react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { Plus, Pencil, Trash2, X, ImagePlus } from 'lucide-react';
 import Topbar from '../../components/dashboard/Topbar';
 import Modal from '../../components/dashboard/Modal';
 import DataTable from '../../components/dashboard/DataTable';
@@ -26,7 +26,11 @@ export default function PreviousProjectsPage() {
   const [deleteTarget, setDeleteTarget] = useState<PreviousProject | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
+  const [existingGallery, setExistingGallery] = useState<string[]>([]);
+  const [removedGallery, setRemovedGallery] = useState<string[]>([]);
   const [formError, setFormError] = useState('');
+  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -34,6 +38,26 @@ export default function PreviousProjectsPage() {
   }, [page]);
 
   useEffect(() => { load(); ourClientService.list().then(r => setClients(r.clients)).catch(() => {}); }, [load]);
+
+  const addGalleryFiles = (files: FileList | null) => {
+    if (!files) return;
+    setGalleryFiles(prev => [...prev, ...Array.from(files)]);
+  };
+
+  const removeNewGalleryFile = (index: number) => {
+    setGalleryFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const markExistingGalleryForRemoval = (path: string) => {
+    setRemovedGallery(prev => [...prev, path]);
+    setExistingGallery(prev => prev.filter(p => p !== path));
+  };
+
+  const resetGalleryState = () => {
+    setGalleryFiles([]);
+    setExistingGallery([]);
+    setRemovedGallery([]);
+  };
 
   const buildFd = () => {
     const fd = new FormData();
@@ -45,19 +69,21 @@ export default function PreviousProjectsPage() {
       else if (v !== '' && v !== null) fd.append(k, k.startsWith('is_') ? (v ? '1' : '0') : String(v));
     });
     if (coverFile) fd.append('cover_image', coverFile);
+    galleryFiles.forEach(f => fd.append('gallery_images[]', f));
+    removedGallery.forEach(p => fd.append('removed_gallery_images[]', p));
     return fd;
   };
 
   const handleCreate = async () => {
     setFormError('');
-    try { await previousProjectService.create(buildFd()); setCreateModal(false); setForm(emptyForm); setCoverFile(null); load(); }
+    try { await previousProjectService.create(buildFd()); setCreateModal(false); setForm(emptyForm); setCoverFile(null); resetGalleryState(); load(); }
     catch (e: unknown) { const err = e as { errors?: Record<string, string[]>; message?: string }; setFormError(err.errors ? Object.values(err.errors).flat()[0] : err.message ?? 'Error'); }
   };
 
   const handleEdit = async () => {
     if (!editTarget) return;
     setFormError('');
-    try { await previousProjectService.update(editTarget.id, buildFd()); setEditTarget(null); load(); }
+    try { await previousProjectService.update(editTarget.id, buildFd()); setEditTarget(null); resetGalleryState(); load(); }
     catch (e: unknown) { const err = e as { errors?: Record<string, string[]>; message?: string }; setFormError(err.errors ? Object.values(err.errors).flat()[0] : err.message ?? 'Error'); }
   };
 
@@ -107,6 +133,57 @@ export default function PreviousProjectsPage() {
       
       <div className="col-span-2"><label className={labelCls}>Project URL</label><input className={inputCls} value={form.project_url} onChange={e => setForm(f => ({ ...f, project_url: e.target.value }))} /></div>
       <div className="col-span-2"><label className={labelCls}>Cover Image</label><input type="file" accept="image/*" onChange={e => setCoverFile(e.target.files?.[0] ?? null)} className="text-white/50 text-sm" /></div>
+
+      {/* Gallery Images */}
+      <div className="col-span-2">
+        <label className={labelCls}>Gallery Images</label>
+        <div className="flex flex-wrap gap-3 mb-3">
+          {/* Existing gallery images (when editing) */}
+          {existingGallery.map((path) => (
+            <div key={path} className="relative group w-20 h-20 rounded-xl overflow-hidden border border-white/10 bg-white/5">
+              <img src={STORAGE + path} alt="Gallery" className="w-full h-full object-cover" />
+              <button
+                type="button"
+                onClick={() => markExistingGalleryForRemoval(path)}
+                className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-red-500/90 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          ))}
+          {/* New gallery files preview */}
+          {galleryFiles.map((file, i) => (
+            <div key={`new-${i}`} className="relative group w-20 h-20 rounded-xl overflow-hidden border border-primary/30 bg-white/5">
+              <img src={URL.createObjectURL(file)} alt="New" className="w-full h-full object-cover" />
+              <button
+                type="button"
+                onClick={() => removeNewGalleryFile(i)}
+                className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-red-500/90 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <X className="w-3 h-3" />
+              </button>
+              <div className="absolute bottom-0 left-0 right-0 bg-primary/80 text-[8px] text-white text-center py-0.5">New</div>
+            </div>
+          ))}
+          {/* Add button */}
+          <button
+            type="button"
+            onClick={() => galleryInputRef.current?.click()}
+            className="w-20 h-20 rounded-xl border-2 border-dashed border-white/10 hover:border-primary/40 flex flex-col items-center justify-center text-white/30 hover:text-primary/60 transition-all cursor-pointer"
+          >
+            <ImagePlus className="w-5 h-5 mb-1" />
+            <span className="text-[9px]">Add</span>
+          </button>
+        </div>
+        <input
+          ref={galleryInputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={e => { addGalleryFiles(e.target.files); e.target.value = ''; }}
+          className="hidden"
+        />
+      </div>
       
       <div className="col-span-2 flex gap-6">
         <label className="flex items-center gap-2 text-white/60 text-sm cursor-pointer"><input type="checkbox" className="accent-primary" checked={form.is_featured} onChange={e => setForm(f => ({ ...f, is_featured: e.target.checked }))} />Featured</label>
@@ -122,7 +199,7 @@ export default function PreviousProjectsPage() {
         <div className="bg-[#1E272E]/60 backdrop-blur-xl border border-white/10 rounded-[1.5rem] p-6">
           <div className="flex items-center justify-between mb-6">
             <div><h2 className="text-white font-semibold">Projects</h2><p className="text-white/40 text-xs mt-0.5">{data?.total ?? 0} published</p></div>
-            <button onClick={() => { setForm(emptyForm); setCoverFile(null); setFormError(''); setCreateModal(true); }} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/20 border border-primary/20 text-primary text-sm font-medium hover:bg-primary/30 transition-all"><Plus className="w-4 h-4" /> New Project</button>
+            <button onClick={() => { setForm(emptyForm); setCoverFile(null); resetGalleryState(); setFormError(''); setCreateModal(true); }} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/20 border border-primary/20 text-primary text-sm font-medium hover:bg-primary/30 transition-all"><Plus className="w-4 h-4" /> New Project</button>
           </div>
           <DataTable
             columns={[
@@ -133,7 +210,7 @@ export default function PreviousProjectsPage() {
               { key: 'is_published', label: 'Published', render: r => <span className={r.is_published ? 'text-green-400 text-xs' : 'text-white/30 text-xs'}>{r.is_published ? 'Yes' : 'No'}</span> },
               { key: 'actions', label: '', render: row => (
                 <div className="flex gap-2 justify-end">
-                  <button onClick={() => { setEditTarget(row); setForm({ title: row.title, title_ar: row.title_ar ?? '', client_display_name: row.client_display_name ?? '', client_display_name_ar: row.client_display_name_ar ?? '', short_description: row.short_description ?? '', short_description_ar: row.short_description_ar ?? '', description: row.description ?? '', description_ar: row.description_ar ?? '', challenge: row.challenge ?? '', challenge_ar: row.challenge_ar ?? '', solution: row.solution ?? '', solution_ar: row.solution_ar ?? '', results: row.results ?? '', results_ar: row.results_ar ?? '', technologies: (row.technologies ?? []).join(', '), technologies_ar: (row.technologies_ar ?? []).join(', '), project_url: row.project_url ?? '', completed_at: row.completed_at ?? '', is_featured: row.is_featured, is_published: row.is_published, display_order: String(row.display_order), our_client_id: String(row.our_client_id ?? '') }); setCoverFile(null); setFormError(''); }} className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-all"><Pencil className="w-3.5 h-3.5" /></button>
+                  <button onClick={() => { setEditTarget(row); setForm({ title: row.title, title_ar: row.title_ar ?? '', client_display_name: row.client_display_name ?? '', client_display_name_ar: row.client_display_name_ar ?? '', short_description: row.short_description ?? '', short_description_ar: row.short_description_ar ?? '', description: row.description ?? '', description_ar: row.description_ar ?? '', challenge: row.challenge ?? '', challenge_ar: row.challenge_ar ?? '', solution: row.solution ?? '', solution_ar: row.solution_ar ?? '', results: row.results ?? '', results_ar: row.results_ar ?? '', technologies: (row.technologies ?? []).join(', '), technologies_ar: (row.technologies_ar ?? []).join(', '), project_url: row.project_url ?? '', completed_at: row.completed_at ?? '', is_featured: row.is_featured, is_published: row.is_published, display_order: String(row.display_order), our_client_id: String(row.our_client_id ?? '') }); setCoverFile(null); setExistingGallery(row.gallery_images ?? []); setGalleryFiles([]); setRemovedGallery([]); setFormError(''); }} className="p-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-all"><Pencil className="w-3.5 h-3.5" /></button>
                   <button onClick={() => setDeleteTarget(row)} className="p-1.5 rounded-lg bg-accent/10 text-accent hover:bg-accent/20 transition-all"><Trash2 className="w-3.5 h-3.5" /></button>
                 </div>
               )},
