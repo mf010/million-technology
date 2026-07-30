@@ -93,7 +93,7 @@ export default function PreviousProjectsPage() {
     setDeleteTarget(null); load();
   };
 
-  const FormFields = () => (
+  const formFields = (
     <div className="grid grid-cols-2 gap-4">
       {formError && <p className="text-accent text-sm col-span-2">{formError}</p>}
       
@@ -225,10 +225,10 @@ export default function PreviousProjectsPage() {
       </main>
 
       <Modal open={createModal} onClose={() => setCreateModal(false)} title="New Project" size="xl">
-        {FormFields()}<button onClick={handleCreate} className="w-full mt-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-all">Create</button>
+        {formFields}<button onClick={handleCreate} className="w-full mt-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-all">Create</button>
       </Modal>
       <Modal open={!!editTarget} onClose={() => setEditTarget(null)} title="Edit Project" size="xl">
-        {FormFields()}<button onClick={handleEdit} className="w-full mt-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-all">Save</button>
+        {formFields}<button onClick={handleEdit} className="w-full mt-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-all">Save</button>
       </Modal>
       <Modal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} title="Delete Project" size="sm">
         <p className="text-white/60 text-sm mb-6">Delete <strong className="text-white">{deleteTarget?.title}</strong>?</p>

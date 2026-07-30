@@ -202,7 +202,7 @@ class PreviousProjectController extends Controller
             ->select([
                 'id', 'our_client_id', 'title', 'title_ar', 'slug', 'client_display_name', 'client_display_name_ar',
                 'short_description', 'short_description_ar', 'technologies', 'technologies_ar', 'cover_image',
-                'completed_at', 'is_featured', 'display_order', 'created_at',
+                'gallery_images', 'completed_at', 'is_featured', 'is_published', 'display_order', 'created_at',
             ])
             ->orderBy('display_order')
             ->orderByDesc('completed_at');
