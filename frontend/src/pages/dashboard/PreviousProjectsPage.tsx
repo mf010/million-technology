@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Plus, Pencil, Trash2, X, ImagePlus } from 'lucide-react';
 import Topbar from '../../components/dashboard/Topbar';
 import Modal from '../../components/dashboard/Modal';
@@ -30,7 +30,6 @@ export default function PreviousProjectsPage() {
   const [existingGallery, setExistingGallery] = useState<string[]>([]);
   const [removedGallery, setRemovedGallery] = useState<string[]>([]);
   const [formError, setFormError] = useState('');
-  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -93,7 +92,7 @@ export default function PreviousProjectsPage() {
     setDeleteTarget(null); load();
   };
 
-  const formFields = (
+  const renderFormFields = () => (
     <div className="grid grid-cols-2 gap-4">
       {formError && <p className="text-accent text-sm col-span-2">{formError}</p>}
       
@@ -165,24 +164,19 @@ export default function PreviousProjectsPage() {
               <div className="absolute bottom-0 left-0 right-0 bg-primary/80 text-[8px] text-white text-center py-0.5">New</div>
             </div>
           ))}
-          {/* Add button */}
-          <button
-            type="button"
-            onClick={() => galleryInputRef.current?.click()}
-            className="w-20 h-20 rounded-xl border-2 border-dashed border-white/10 hover:border-primary/40 flex flex-col items-center justify-center text-white/30 hover:text-primary/60 transition-all cursor-pointer"
-          >
+          {/* Add button using native HTML label */}
+          <label className="w-20 h-20 rounded-xl border-2 border-dashed border-white/10 hover:border-primary/40 flex flex-col items-center justify-center text-white/30 hover:text-primary/60 transition-all cursor-pointer">
             <ImagePlus className="w-5 h-5 mb-1" />
             <span className="text-[9px]">Add</span>
-          </button>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={e => { addGalleryFiles(e.target.files); e.target.value = ''; }}
+              className="hidden"
+            />
+          </label>
         </div>
-        <input
-          ref={galleryInputRef}
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={e => { addGalleryFiles(e.target.files); e.target.value = ''; }}
-          className="hidden"
-        />
       </div>
       
       <div className="col-span-2 flex gap-6">
@@ -225,10 +219,10 @@ export default function PreviousProjectsPage() {
       </main>
 
       <Modal open={createModal} onClose={() => setCreateModal(false)} title="New Project" size="xl">
-        {formFields}<button onClick={handleCreate} className="w-full mt-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-all">Create</button>
+        {renderFormFields()}<button onClick={handleCreate} className="w-full mt-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-all">Create</button>
       </Modal>
       <Modal open={!!editTarget} onClose={() => setEditTarget(null)} title="Edit Project" size="xl">
-        {formFields}<button onClick={handleEdit} className="w-full mt-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-all">Save</button>
+        {renderFormFields()}<button onClick={handleEdit} className="w-full mt-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary/90 transition-all">Save</button>
       </Modal>
       <Modal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} title="Delete Project" size="sm">
         <p className="text-white/60 text-sm mb-6">Delete <strong className="text-white">{deleteTarget?.title}</strong>?</p>
