@@ -104,12 +104,12 @@ function Hero() {
               {isArabic ? (
                 <>
                   نصنع <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">المليون القادم</span>.
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">المليون القادم</span>
                 </>
               ) : (
                 <>
                   Engineering the <br />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Next Million</span>.
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Next Million</span>
                 </>
               )}
             </h1>
@@ -166,9 +166,9 @@ export default function LandingPage() {
 
   useEffect(() => {
     // Eagerly fetch active, published entities for home display
-    serviceService.list().then(r => setServices(r.services.slice(0, 4))).catch(() => {});
+    serviceService.list().then(r => setServices(r.services)).catch(() => {});
     postService.list({ page_size: 3 }).then(r => setPosts(r.data?.data ?? [])).catch(() => {});
-    previousProjectService.list({ page_size: '3' }).then(r => setProjects(r.data?.data ?? [])).catch(() => {});
+    previousProjectService.list({ page_size: '100' }).then(r => setProjects(r.data?.data ?? [])).catch(() => {});
     ourClientService.list({ is_featured: true }).then(r => setClients(r.clients)).catch(() => {});
     clientStatementService.list().then(r => setStatements(r.statements)).catch(() => {});
     jobOpeningService.list({ page_size: '3' }).then(r => setJobs(r.data?.data ?? [])).catch(() => {});

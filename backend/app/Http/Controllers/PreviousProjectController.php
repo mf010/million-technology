@@ -83,6 +83,8 @@ class PreviousProjectController extends Controller
             'cover_image'              => 'nullable|image|max:5120',
             'gallery_images'           => 'nullable|array',
             'gallery_images.*'         => 'image|max:5120',
+            'removed_gallery_images'   => 'nullable|array',
+            'removed_gallery_images.*' => 'string',
             'project_url'              => 'nullable|string|max:500',
             'completed_at'             => 'nullable|date',
             'is_featured'              => 'nullable|boolean',
@@ -302,16 +304,28 @@ class PreviousProjectController extends Controller
             $data['cover_image'] = $this->storeCover($request->file('cover_image'));
         }
 
-        // Gallery images — replace entire gallery and delete old files
+        // Gallery images — incremental add/remove
+        $currentGallery = (array) $project->gallery_images;
+
+        // Remove specific gallery images
+        if ($request->has('removed_gallery_images')) {
+            $toRemove = (array) $request->input('removed_gallery_images');
+            foreach ($toRemove as $path) {
+                $this->deleteFile($path);
+            }
+            $currentGallery = array_values(array_diff($currentGallery, $toRemove));
+        }
+
+        // Append new gallery images
         if ($request->hasFile('gallery_images')) {
-            foreach ((array) $project->gallery_images as $oldPath) {
-                $this->deleteFile($oldPath);
-            }
-            $newGallery = [];
             foreach ($request->file('gallery_images') as $file) {
-                $newGallery[] = $this->storeGalleryImage($file);
+                $currentGallery[] = $this->storeGalleryImage($file);
             }
-            $data['gallery_images'] = $newGallery;
+        }
+
+        // Only update if gallery was modified
+        if ($request->has('removed_gallery_images') || $request->hasFile('gallery_images')) {
+            $data['gallery_images'] = $currentGallery ?: null;
         }
 
         $project->update($data);
