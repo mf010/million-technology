@@ -40,9 +40,9 @@ class PreviousProjectController extends Controller
         return $file->store('projects/covers', 'public');
     }
 
-    private function storeGalleryImage($file): string
+    private function storeSectionImage($file): string
     {
-        return $file->store('projects/gallery', 'public');
+        return $file->store('projects/sections', 'public');
     }
 
     private function deleteFile(?string $path): void
@@ -51,6 +51,16 @@ class PreviousProjectController extends Controller
             Storage::disk('public')->delete($path);
         }
     }
+
+    /**
+     * The four section image field names.
+     */
+    private const SECTION_IMAGE_FIELDS = [
+        'description_image',
+        'challenge_image',
+        'solution_image',
+        'results_image',
+    ];
 
     /**
      * Shared validation rules for create / update.
@@ -70,21 +80,21 @@ class PreviousProjectController extends Controller
             'short_description_ar'     => 'nullable|string|max:500',
             'description'              => 'nullable|string',
             'description_ar'           => 'nullable|string',
+            'description_image'        => 'nullable|image|max:5120',
             'challenge'                => 'nullable|string',
             'challenge_ar'             => 'nullable|string',
+            'challenge_image'          => 'nullable|image|max:5120',
             'solution'                 => 'nullable|string',
             'solution_ar'              => 'nullable|string',
+            'solution_image'           => 'nullable|image|max:5120',
             'results'                  => 'nullable|string',
             'results_ar'               => 'nullable|string',
+            'results_image'            => 'nullable|image|max:5120',
             'technologies'             => 'nullable|array',
             'technologies.*'           => 'string|max:100',
             'technologies_ar'          => 'nullable|array',
             'technologies_ar.*'        => 'string|max:100',
             'cover_image'              => 'nullable|image|max:5120',
-            'gallery_images'           => 'nullable|array',
-            'gallery_images.*'         => 'image|max:5120',
-            'removed_gallery_images'   => 'nullable|array',
-            'removed_gallery_images.*' => 'string',
             'project_url'              => 'nullable|string|max:500',
             'completed_at'             => 'nullable|date',
             'is_featured'              => 'nullable|boolean',
@@ -130,16 +140,12 @@ class PreviousProjectController extends Controller
             ? $this->storeCover($request->file('cover_image'))
             : null;
 
-        // Gallery images — multiple files
-        $galleryPaths = [];
-        if ($request->hasFile('gallery_images')) {
-            $files = $request->file('gallery_images');
-            if (! is_array($files)) {
-                $files = [$files];
-            }
-            foreach ($files as $file) {
-                $galleryPaths[] = $this->storeGalleryImage($file);
-            }
+        // Section images
+        $sectionImages = [];
+        foreach (self::SECTION_IMAGE_FIELDS as $field) {
+            $sectionImages[$field] = $request->hasFile($field)
+                ? $this->storeSectionImage($request->file($field))
+                : null;
         }
 
         $project = PreviousProject::create([
@@ -153,16 +159,19 @@ class PreviousProjectController extends Controller
             'short_description_ar'   => $request->short_description_ar,
             'description'            => $request->description,
             'description_ar'         => $request->description_ar,
+            'description_image'      => $sectionImages['description_image'],
             'challenge'              => $request->challenge,
             'challenge_ar'           => $request->challenge_ar,
+            'challenge_image'        => $sectionImages['challenge_image'],
             'solution'               => $request->solution,
             'solution_ar'            => $request->solution_ar,
+            'solution_image'         => $sectionImages['solution_image'],
             'results'                => $request->results,
             'results_ar'             => $request->results_ar,
+            'results_image'          => $sectionImages['results_image'],
             'technologies'           => $request->input('technologies', []),
             'technologies_ar'        => $request->input('technologies_ar'),
             'cover_image'            => $coverPath,
-            'gallery_images'         => $galleryPaths ?: null,
             'project_url'            => $request->project_url,
             'completed_at'           => $request->completed_at,
             'is_featured'            => $request->input('is_featured', false),
@@ -206,7 +215,8 @@ class PreviousProjectController extends Controller
             ->select([
                 'id', 'our_client_id', 'title', 'title_ar', 'slug', 'client_display_name', 'client_display_name_ar',
                 'short_description', 'short_description_ar', 'technologies', 'technologies_ar', 'cover_image',
-                'gallery_images', 'completed_at', 'is_featured', 'is_published', 'display_order', 'created_at',
+                'description_image', 'challenge_image', 'solution_image', 'results_image',
+                'completed_at', 'is_featured', 'is_published', 'display_order', 'created_at',
             ])
             ->orderBy('display_order')
             ->orderByDesc('completed_at');
@@ -308,32 +318,12 @@ class PreviousProjectController extends Controller
             $data['cover_image'] = $this->storeCover($request->file('cover_image'));
         }
 
-        // Gallery images — incremental add/remove
-        $currentGallery = (array) $project->gallery_images;
-
-        // Remove specific gallery images
-        if ($request->has('removed_gallery_images')) {
-            $toRemove = (array) $request->input('removed_gallery_images');
-            foreach ($toRemove as $path) {
-                $this->deleteFile($path);
+        // Section images — each handled exactly like cover_image
+        foreach (self::SECTION_IMAGE_FIELDS as $field) {
+            if ($request->hasFile($field)) {
+                $this->deleteFile($project->$field);
+                $data[$field] = $this->storeSectionImage($request->file($field));
             }
-            $currentGallery = array_values(array_diff($currentGallery, $toRemove));
-        }
-
-        // Append new gallery images
-        if ($request->hasFile('gallery_images')) {
-            $files = $request->file('gallery_images');
-            if (! is_array($files)) {
-                $files = [$files];
-            }
-            foreach ($files as $file) {
-                $currentGallery[] = $this->storeGalleryImage($file);
-            }
-        }
-
-        // Only update if gallery was modified
-        if ($request->has('removed_gallery_images') || $request->hasFile('gallery_images')) {
-            $data['gallery_images'] = $currentGallery ?: null;
         }
 
         $project->update($data);
