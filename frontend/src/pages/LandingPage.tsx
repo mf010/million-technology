@@ -274,9 +274,9 @@ export default function LandingPage() {
             >
               {/* Cover */}
               <div className="h-48 overflow-hidden relative bg-white/5">
-                {(proj.cover_image || (proj.gallery_images && proj.gallery_images.length > 0)) ? (
+                {proj.cover_image ? (
                   <img
-                    src={STORAGE_URL + (proj.cover_image ?? proj.gallery_images![0])}
+                    src={STORAGE_URL + proj.cover_image}
                     alt={proj.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />

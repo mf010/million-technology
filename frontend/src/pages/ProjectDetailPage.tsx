@@ -10,7 +10,6 @@ import {
   Target,
   Lightbulb,
   TrendingUp,
-  LayoutGrid,
   ChevronRight,
 } from 'lucide-react';
 import PageShell from '../components/PageShell';
@@ -168,7 +167,7 @@ export default function ProjectDetailPage() {
 
             {/* Content sections */}
             <div className="space-y-6">
-              {/* Overview */}
+              {/* Overview / Description */}
               {(project.description || project.description_ar) && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
@@ -182,6 +181,15 @@ export default function ProjectDetailPage() {
                   <p className="text-white/70 leading-relaxed whitespace-pre-wrap">
                     {t(project.description, project.description_ar)}
                   </p>
+                  {project.description_image && (
+                    <div className="mt-6 rounded-2xl overflow-hidden border border-white/5">
+                      <img
+                        src={STORAGE_URL + project.description_image}
+                        alt={isArabic ? 'صورة النظرة العامة' : 'Overview image'}
+                        className="w-full h-auto object-cover"
+                      />
+                    </div>
+                  )}
                 </motion.div>
               )}
 
@@ -205,6 +213,15 @@ export default function ProjectDetailPage() {
                       <p className="text-white/60 text-sm leading-relaxed">
                         {t(project.challenge, project.challenge_ar)}
                       </p>
+                      {project.challenge_image && (
+                        <div className="mt-4 rounded-xl overflow-hidden border border-white/5">
+                          <img
+                            src={STORAGE_URL + project.challenge_image}
+                            alt={isArabic ? 'صورة التحدي' : 'Challenge image'}
+                            className="w-full h-auto object-cover"
+                          />
+                        </div>
+                      )}
                     </motion.div>
                   )}
                   {(project.solution || project.solution_ar) && (
@@ -222,6 +239,15 @@ export default function ProjectDetailPage() {
                       <p className="text-white/60 text-sm leading-relaxed">
                         {t(project.solution, project.solution_ar)}
                       </p>
+                      {project.solution_image && (
+                        <div className="mt-4 rounded-xl overflow-hidden border border-white/5">
+                          <img
+                            src={STORAGE_URL + project.solution_image}
+                            alt={isArabic ? 'صورة الحل' : 'Solution image'}
+                            className="w-full h-auto object-cover"
+                          />
+                        </div>
+                      )}
                     </motion.div>
                   )}
                   {(project.results || project.results_ar) && (
@@ -239,35 +265,18 @@ export default function ProjectDetailPage() {
                       <p className="text-white/60 text-sm leading-relaxed">
                         {t(project.results, project.results_ar)}
                       </p>
+                      {project.results_image && (
+                        <div className="mt-4 rounded-xl overflow-hidden border border-white/5">
+                          <img
+                            src={STORAGE_URL + project.results_image}
+                            alt={isArabic ? 'صورة النتائج' : 'Results image'}
+                            className="w-full h-auto object-cover"
+                          />
+                        </div>
+                      )}
                     </motion.div>
                   )}
                 </div>
-              )}
-
-              {/* Gallery */}
-              {project.gallery_images && project.gallery_images.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="bg-surface/40 backdrop-blur-2xl border border-white/10 rounded-[2rem] p-8"
-                >
-                  <h3 className="text-xl font-bold mb-6 text-white flex items-center gap-2">
-                    <LayoutGrid className="w-5 h-5 text-primary" />
-                    {isArabic ? 'معرض الصور' : 'Gallery'}
-                  </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {project.gallery_images.map((img, i) => (
-                      <div key={i} className="aspect-video rounded-2xl overflow-hidden bg-white/5 border border-white/5">
-                        <img
-                          src={STORAGE_URL + img}
-                          alt={`${t(project.title, project.title_ar)} — ${i + 1}`}
-                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
               )}
             </div>
 
